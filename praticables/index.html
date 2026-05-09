@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Praticables">
+<meta name="theme-color" content="#e0d3bb">
+<title>Plan implantation praticables</title>
+<link rel="apple-touch-icon" href="icon.jpg">
+<link rel="icon" type="image/jpeg" href="icon.jpg">
+<link rel="manifest" href="manifest.json">
+
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+<style>
+  * {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  :root {
+    --bg: #e0d3bb;
+    --card: #ffffff;
+    --text: #1e293b;
+    --text-light: #5a4a2e;
+    --border: #cbbf9a;
+    --accent: #5b4bdb;
+    --accent2: #7b6cff;
+    --green: #2ca36b;
+    --orange: #ff8b3d;
+    --danger: #d64545;
+    --module: #cbd5e1;
+    --moduleRiser: #4c6e9e;
+    --shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+    --card-radius: 20px;
+  }
+
+  .dark {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --text: #f1f5f9;
+    --text-light: #94a3b8;
+    --border: #334155;
+    --module: #475569;
+    --moduleRiser: #2d4a6e;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  body {
+    margin: 0;
+    padding: 12px;
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    transition: background 0.2s, color 0.2s;
+    touch-action: pan-y;
+  }
+
+  button, input, select, .cell, .planBlock { touch-action: manipulation; }
+
+  .mainTitle {
+    text-align: center;
+    margin-bottom: 16px;
+    padding: 16px 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--card-radius);
+    box-shadow: var(--shadow);
+  }
+  .mainTitle .planTitle {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-light);
+  }
+  .mainTitle h1 {
+    margin: 8px 0 4px;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: #1e3a5f;
+  }
+  .mainTitle p {
+    margin: 0;
+    font-size: 13px;
+    color: #5a4a2e;
+  }
+  .dark .mainTitle h1 { color: #f1f5f9; }
+  .dark .mainTitle p { color: #94a3b8; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--card-radius);
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+  }
+
+  .compactRow {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+  }
+  .artistField { flex: 3; }
+  .dateField { flex: 1; }
+  .compactRow input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    font-size: 16px;
+    background: var(--card);
+    color: var(--text);
+  }
+  .compactRow label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-light);
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  .topBtns {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .topBtns button { flex: 1; margin: 0; }
+
+  button {
+    border: none;
+    border-radius: 40px;
+    padding: 12px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.1s ease;
+    color: white;
+    background: #475569;
+    touch-action: manipulation;
+  }
+  button:active { transform: scale(0.97); opacity: 0.9; }
+
+  .primary { background: linear-gradient(135deg, var(--accent), var(--accent2)); }
+  .green { background: var(--green); }
+  .orange { background: var(--orange); }
+  .red { background: var(--danger); }
+  .darkBtn { background: #334155; }
+
+  .module {
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 16px;
+    margin-bottom: 16px;
+    background: rgba(255,255,255,0.02);
+  }
+
+  .dimRow {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .dimRow .fieldAB { flex: 1; }
+  .dimRow .fieldH { flex: 1; }
+  .dimRow input, .dimRow select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    font-size: 14px;
+    background: var(--card);
+    color: var(--text);
+  }
+
+  .info-riser {
+    background: #f0e6d2;
+    color: #5a4a2e;
+    padding: 8px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    margin: 8px 0 0;
+    border-left: 3px solid #ff8b3d;
+  }
+  .dark .info-riser {
+    background: #2d3748;
+    color: #cbd5e1;
+    border-left-color: #ff8b3d;
+  }
+
+  .grid {
+    display: grid;
+    gap: 3px;
+    margin: 12px 0;
+    justify-content: flex-start;
+  }
+  .cell {
+    background: linear-gradient(145deg, var(--module), #94a3b8);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 11px;
+    color: #0f172a;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    position: relative;
+  }
+  .dark .cell { color: white; text-shadow: 0 1px 1px black; }
+  .cell.riser { background: linear-gradient(145deg, var(--moduleRiser), #5f7fb0); }
+
+  .r {
+    position: absolute;
+    left: 3px;
+    bottom: 2px;
+    font-size: 8px;
+    font-weight: 800;
+    color: #ff5e5e;
+    background: rgba(0,0,0,0.5);
+    padding: 0px 3px;
+    border-radius: 20px;
+  }
+
+  .planGlobal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-top: 12px;
+    min-height: 80px;
+  }
+  .planBlock {
+    padding: 4px;
+    background: rgba(0,0,0,0.04);
+    border-radius: 12px;
+    transform-origin: top left;
+  }
+
+  .moduleResume {
+    background: rgba(0,0,0,0.04);
+    border-radius: 16px;
+    padding: 12px;
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 12px 0;
+  }
+  .legend {
+    margin: 12px 0;
+    font-size: 11px;
+    opacity: 0.65;
+    text-align: center;
+  }
+  .commande {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+  .big {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+  .small {
+    font-size: 11px;
+    opacity: 0.6;
+    margin-top: 6px;
+  }
+  .exportBtns {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 18px;
+  }
+</style>
+</head>
+<body>
+
+<div class="mainTitle">
+  <div class="planTitle">PLAN D'IMPLANTATION PRATICABLES</div>
+  <h1 id="artistDisplay">—</h1>
+  <p id="dateDisplay"></p>
+</div>
+
+<div class="card">
+  <div class="compactRow">
+    <div class="artistField">
+      <label>Artiste</label>
+      <input id="artistInput" placeholder="Nom">
+    </div>
+    <div class="dateField">
+      <label>Date</label>
+      <input id="dateInput" type="date">
+    </div>
+  </div>
+  <div class="topBtns">
+    <button class="primary" onclick="lockHeader()">✓ Valider</button>
+    <button class="orange" onclick="unlockHeader()">✎ Modifier</button>
+    <button class="darkBtn" onclick="toggleTheme()">🌙 Nuit</button>
+  </div>
+</div>
+
+<div class="card">
+  <button class="primary" onclick="addModule()">+ Ajouter module</button>
+  <button class="red" onclick="resetAll()">⟳ Reset général</button>
+</div>
+
+<div id="modules"></div>
+
+<div class="card" id="exportArea">
+  <div class="exportHeader" style="text-align:center;">
+    <div style="font-size:12px; letter-spacing:1.5px; color:var(--text-light);">PLAN D'IMPLANTATION PRATICABLES</div>
+    <h1 id="exportArtist" style="margin:6px 0 2px; font-size:26px; color:#1e3a5f;">—</h1>
+    <p id="exportDate" style="margin:0; font-size:12px; color:#5a4a2e;"></p>
+  </div>
+  <div id="resumeModules" class="moduleResume"></div>
+  <div id="planGlobal" class="planGlobal"></div>
+  <div class="legend">🔴 R = Riser • Chiffre = Hauteur (cm)</div>
+  <div class="commande">
+    <h2 style="font-size:18px; margin:0 0 10px;">COMMANDE MATÉRIEL</h2>
+    <div id="totaux" class="big"></div>
+    <div id="sucres" class="small"></div>
+  </div>
+  <div class="exportBtns">
+    <button class="green" onclick="exportPNG()">📸 Exporter (PNG)</button>
+    <button class="primary" onclick="copyCommande()">📋 Copier</button>
+    <button class="orange" onclick="shareCommande()">📤 Envoyer</button>
+  </div>
+</div>
+
+<script>
+  let modules = [];
+  let modulesContainer, artistInput, dateInput, artistDisplay, dateDisplay, exportArtist, exportDate, resumeModules, totaux, sucres, planGlobal;
+
+  const aOptions = [1,2,3,4,5,6,7,8,9,10,12,14,16,18,20,25,30];
+  const hOptions = [0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200];
+
+  function save() {
+    localStorage.setItem("praticables_modules", JSON.stringify(modules));
+    localStorage.setItem("praticables_artist", artistInput.value);
+    localStorage.setItem("praticables_date", dateInput.value);
+    localStorage.setItem("praticables_theme", document.body.classList.contains("dark"));
+  }
+
+  function load() {
+    let savedModules = localStorage.getItem("praticables_modules");
+    modules = savedModules ? JSON.parse(savedModules) : [];
+    artistInput.value = localStorage.getItem("praticables_artist") || "";
+    dateInput.value = localStorage.getItem("praticables_date") || "";
+    if (localStorage.getItem("praticables_theme") === "true") document.body.classList.add("dark");
+    render();
+  }
+
+  function toggleTheme() {
+    document.body.classList.toggle("dark");
+    save();
+    render();
+  }
+
+  function lockHeader() {
+    save();
+    render();
+    artistInput.blur();
+    dateInput.blur();
+  }
+
+  function unlockHeader() {
+    artistInput.focus();
+  }
+
+  function addModule() {
+    if (modules.some(m => !m.validated)) {
+      alert("Veuillez valider ou supprimer le module en cours");
+      return;
+    }
+    modules.unshift({ A: "", B: "", H: "", R: false, validated: false });
+    render();
+  }
+
+  function calc(m) {
+    let cols = Math.ceil((parseFloat(m.A) || 0) / 2);
+    let rows = Math.ceil((parseFloat(m.B) || 0));
+    if (cols < 1) cols = 1;
+    if (rows < 1) rows = 1;
+    let praticables = cols * rows;
+    let risers = m.R ? praticables : 0;
+    let sucres = ((cols - 1) * rows + cols * (rows - 1)) * 2;
+    return { cols, rows, praticables, risers, sucres };
+  }
+
+  function validateModule(i) {
+    let m = modules[i];
+    if (!m.A || !m.B || parseFloat(m.A) <= 0 || parseFloat(m.B) <= 0) {
+      alert("Remplissez A et B > 0");
+      return;
+    }
+    if (m.H === "" || m.H === undefined) m.H = 0;
+    modules[i].validated = true;
+    save();
+    render();
+  }
+
+  function removeModule(i) {
+    modules.splice(i, 1);
+    save();
+    render();
+  }
+
+  function update(i, field, val) {
+    modules[i][field] = val;
+    render();
+  }
+
+  function renderSelect(value, options, field, idx, unit) {
+    let optHtml = options.map(v => `<option value="${v}" ${parseFloat(value) == v ? "selected" : ""}>${v}${unit}</option>`);
+    return `<select onchange="update(${idx},'${field}',this.value)" style="margin-bottom:6px;">${optHtml.join("")}</select>
+            <input type="number" placeholder="ou valeur libre" value="${value}" onchange="update(${idx},'${field}',this.value)" style="margin-top:4px;">`;
+  }
+
+  function drawGlobalPlan() {
+    planGlobal.innerHTML = "";
+    let validated = modules.filter(m => m.validated);
+    if (validated.length === 0) return;
+    let totalPraticables = 0;
+    validated.forEach(m => { let c = calc(m); totalPraticables += c.praticables; });
+    let baseSize = 80;
+    if (totalPraticables > 80) baseSize = 34;
+    else if (totalPraticables > 60) baseSize = 40;
+    else if (totalPraticables > 40) baseSize = 48;
+    else if (totalPraticables > 20) baseSize = 58;
+    else if (totalPraticables > 10) baseSize = 68;
+    else baseSize = 80;
+    let cellHeight = baseSize / 2;
+    validated.forEach(m => {
+      let c = calc(m);
+      let block = document.createElement("div");
+      block.className = "planBlock";
+      let grid = document.createElement("div");
+      grid.className = "grid";
+      grid.style.gridTemplateColumns = `repeat(${c.cols}, ${baseSize}px)`;
+      for (let i = 0; i < c.cols * c.rows; i++) {
+        let cell = document.createElement("div");
+        cell.className = `cell ${m.R ? "riser" : ""}`;
+        cell.style.width = baseSize + "px";
+        cell.style.height = cellHeight + "px";
+        cell.style.fontSize = Math.max(9, baseSize / 5) + "px";
+        cell.innerText = m.H == 0 ? "sol" : m.H;
+        if (m.R) {
+          let rBadge = document.createElement("div");
+          rBadge.className = "r";
+          rBadge.innerText = "R";
+          cell.appendChild(rBadge);
+        }
+        grid.appendChild(cell);
+      }
+      block.appendChild(grid);
+      planGlobal.appendChild(block);
+    });
+  }
+
+  function render() {
+    artistDisplay.innerText = artistInput.value || "—";
+    dateDisplay.innerText = dateInput.value ? new Date(dateInput.value).toLocaleDateString("fr-FR") : "";
+    exportArtist.innerText = artistInput.value || "—";
+    exportDate.innerText = dateDisplay.innerText;
+
+    let html = "";
+    let totalP = 0, totalR = 0, totalS = 0;
+    let validatedModules = [];
+
+    modules.forEach((m, idx) => {
+      let c = calc(m);
+      if (m.validated) {
+        validatedModules.push(m);
+        totalP += c.praticables;
+        totalR += c.risers;
+        totalS += c.sucres;
+      }
+      if (!m.validated) {
+        let riserInfo = m.R ? `<div class="info-riser">ℹ️ Le riser ajoute +20 cm à la hauteur totale</div>` : "";
+        html += `<div class="module">
+          <h3 style="margin:0 0 12px;">📌 Nouveau module</h3>
+          <div class="dimRow">
+            <div class="fieldAB">${renderSelect(m.A, aOptions, "A", idx, "m")}</div>
+            <div class="fieldAB">${renderSelect(m.B, aOptions, "B", idx, "m")}</div>
+          </div>
+          <div class="dimRow">
+            <div class="fieldH">${renderSelect(m.H, hOptions, "H", idx, "cm")}</div>
+            <div class="fieldH">
+              <label>Riser</label>
+              <select onchange="update(${idx},'R',this.value==='true')">
+                <option value="false" ${!m.R ? "selected" : ""}>Non</option>
+                <option value="true" ${m.R ? "selected" : ""}>Oui</option>
+              </select>
+            </div>
+          </div>
+          ${riserInfo}
+          <div class="grid" style="grid-template-columns: repeat(${Math.max(c.cols,1)}, 64px)">
+            ${Array(Math.max(c.cols * c.rows, 1)).fill(0).map(() => `<div class="cell ${m.R ? 'riser' : ''}" style="width:64px;height:32px;">${m.H == 0 ? "sol" : (m.H || "?")}${m.R ? '<div class="r">R</div>' : ''}</div>`).join("")}
+          </div>
+          <button class="primary" onclick="validateModule(${idx})">✓ VALIDER</button>
+        </div>`;
+      } else {
+        html += `<div class="module">
+          <h3 style="margin:0 0 8px;">✅ ${m.A} × ${m.B} — ${m.H == 0 ? "sol" : (m.H + " cm")} ${m.R ? "• Riser" : ""}</h3>
+          <div>Praticables : ${c.praticables} &nbsp;|&nbsp; Risers : ${c.risers}<br><span class="small">Sucres : ${c.sucres}</span></div>
+          <div class="grid" style="grid-template-columns: repeat(${c.cols}, 64px)">
+            ${Array(c.cols * c.rows).fill(0).map(() => `<div class="cell ${m.R ? 'riser' : ''}" style="width:64px;height:32px;">${m.H == 0 ? "sol" : m.H}${m.R ? '<div class="r">R</div>' : ''}</div>`).join("")}
+          </div>
+          <button class="red" onclick="removeModule(${idx})">🗑 Supprimer</button>
+        </div>`;
+      }
+    });
+
+    modulesContainer.innerHTML = html;
+    let resumeHtml = `<b>${validatedModules.length} module${validatedModules.length > 1 ? "s" : ""} validé(s) :</b><br>`;
+    resumeHtml += validatedModules.map(m => `• ${m.A} × ${m.B} → ${m.H == 0 ? "sol" : (m.H + " cm")} ${m.R ? " (sur riser)" : ""}`).join("<br>");
+    if (validatedModules.length === 0) resumeHtml += "Aucun module validé";
+    resumeModules.innerHTML = resumeHtml;
+    totaux.innerHTML = `Modules : ${validatedModules.length}<br>Praticables : ${totalP}<br>Risers : ${totalR}`;
+    sucres.innerHTML = `Sucres : ${totalS}`;
+    drawGlobalPlan();
+    save();
+  }
+
+  function exportPNG() {
+    html2canvas(document.getElementById("exportArea"), { scale: 2, backgroundColor: null }).then(canvas => {
+      let link = document.createElement("a");
+      link.download = "plan_praticables.png";
+      link.href = canvas.toDataURL();
+      link.click();
+    }).catch(() => alert("Erreur capture"));
+  }
+
+  function copyCommande() {
+    let modulesDetail = "";
+    modules.filter(m => m.validated).forEach(m => {
+      modulesDetail += `${m.A} × ${m.B} → ${m.H == 0 ? "sol" : (m.H + " cm")} ${m.R ? "(sur riser)" : ""}\n\n`;
+    });
+    let recap = `\n\nModules : ${modules.filter(m => m.validated).length}\nPraticables : ${document.getElementById("totaux").innerText.split("\n")[1]?.replace("Praticables : ", "") || "0"}\nRisers : ${document.getElementById("totaux").innerText.split("\n")[2]?.replace("Risers : ", "") || "0"}\nSucres : ${document.getElementById("sucres").innerText.replace("Sucres : ", "") || "0"}`;
+    let txt = `${artistInput.value || "—"}\n${dateDisplay.innerText}\n\n${modulesDetail}${recap}`;
+    navigator.clipboard.writeText(txt);
+    alert("✅ Commande copiée");
+  }
+
+  function shareCommande() {
+    let modulesDetail = "";
+    modules.filter(m => m.validated).forEach(m => {
+      modulesDetail += `${m.A} × ${m.B} → ${m.H == 0 ? "sol" : (m.H + " cm")} ${m.R ? "(sur riser)" : ""}\n\n`;
+    });
+    let recap = `\n\nModules : ${modules.filter(m => m.validated).length}\nPraticables : ${document.getElementById("totaux").innerText.split("\n")[1]?.replace("Praticables : ", "") || "0"}\nRisers : ${document.getElementById("totaux").innerText.split("\n")[2]?.replace("Risers : ", "") || "0"}\nSucres : ${document.getElementById("sucres").innerText.replace("Sucres : ", "") || "0"}`;
+    let txt = `${artistInput.value || "—"}\n${dateDisplay.innerText}\n\n${modulesDetail}${recap}`;
+    if (navigator.share) navigator.share({ title: "Commande praticables", text: txt }).catch(() => alert("Partage annulé"));
+    else alert("Partage non supporté");
+  }
+
+  function resetAll() {
+    if (!confirm("⚠️ Tout effacer ? Modules, artiste, date…")) return;
+    modules = [];
+    artistInput.value = "";
+    dateInput.value = "";
+    localStorage.clear();
+    render();
+  }
+
+  window.onload = () => {
+    modulesContainer = document.getElementById("modules");
+    artistInput = document.getElementById("artistInput");
+    dateInput = document.getElementById("dateInput");
+    artistDisplay = document.getElementById("artistDisplay");
+    dateDisplay = document.getElementById("dateDisplay");
+    exportArtist = document.getElementById("exportArtist");
+    exportDate = document.getElementById("exportDate");
+    resumeModules = document.getElementById("resumeModules");
+    totaux = document.getElementById("totaux");
+    sucres = document.getElementById("sucres");
+    planGlobal = document.getElementById("planGlobal");
+    load();
+  };
+</script>
+</body>
+</html>
