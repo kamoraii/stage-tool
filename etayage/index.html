@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Etayage">
+<meta name="theme-color" content="#e0d3bb">
+<title>Calculateur d’étayage de scène</title>
+<link rel="apple-touch-icon" href="icone.jpg">
+<link rel="manifest" href="manifest.json">
+
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+<style>
+  * {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  :root {
+    --bg: #e0d3bb;
+    --card: #ffffff;
+    --text: #1e293b;
+    --text-light: #5a4a2e;
+    --border: #cbbf9a;
+    --accent: #7b5cff;
+    --accent2: #9b7cff;
+    --green: #2ca36b;
+    --orange: #ff8b3d;
+    --danger: #d64545;
+    --shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+    --card-radius: 20px;
+  }
+
+  .dark {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --text: #f1f5f9;
+    --text-light: #94a3b8;
+    --border: #334155;
+    --accent: #7b5cff;
+    --accent2: #9b7cff;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  body {
+    margin: 0;
+    padding: 12px;
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    transition: background 0.2s, color 0.2s;
+    touch-action: pan-y;
+  }
+
+  button, input, select, .cell {
+    touch-action: manipulation;
+  }
+
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--card-radius);
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+  }
+
+  h1 {
+    font-size: 24px;
+    text-align: center;
+    margin: 0 0 4px;
+    color: #1e3a5f;
+  }
+  .dark h1 { color: #f1f5f9; }
+
+  .subtitle {
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-light);
+    margin-bottom: 20px;
+  }
+
+  .row {
+    margin-bottom: 16px;
+  }
+  .row label {
+    display: block;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+  .dim-control {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+  }
+  .dim-control select, .dim-control input {
+    padding: 10px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    font-size: 16px;
+    flex: 1;
+  }
+  .unit-switch {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+  }
+  .unit-switch button {
+    flex: 1;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 30px;
+    padding: 8px;
+    font-size: 13px;
+  }
+  .unit-switch button.active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+
+  button {
+    border: none;
+    border-radius: 40px;
+    padding: 12px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.1s ease;
+    color: white;
+    background: #475569;
+    touch-action: manipulation;
+  }
+  button:active { transform: scale(0.97); opacity: 0.9; }
+
+  .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent2)); }
+  .btn-reset { background: var(--danger); }
+  .btn-export { background: var(--green); }
+  .btn-copy { background: #5b57ff; }
+  .btn-share { background: var(--orange); }
+
+  .info-compo {
+    background: rgba(123,92,255,0.1);
+    border-radius: 16px;
+    padding: 10px;
+    margin: 12px 0;
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .btn-small {
+    padding: 6px 12px;
+    font-size: 12px;
+    background: var(--accent);
+  }
+
+  .plan-svg {
+    width: 100%;
+    background: rgba(0,0,0,0.03);
+    border-radius: 16px;
+    margin-top: 10px;
+  }
+  svg {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+  }
+
+  .materialBlock {
+    background: rgba(123,92,255,0.05);
+    border-radius: 16px;
+    padding: 14px;
+    margin: 12px 0;
+  }
+
+  .btn-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+  .btn-group button {
+    flex: 1;
+  }
+
+  footer {
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-light);
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Calculateur d'étayage</h1>
+  <div class="subtitle">Dimensions de la scène (mailles 2×2m ou mètres)</div>
+
+  <div class="card">
+    <div class="row">
+      <label>Largeur</label>
+      <div class="dim-control">
+        <input type="number" id="largeur" step="1" placeholder="Valeur">
+        <span style="font-weight:bold; margin:0 4px;">x</span>
+        <input type="number" id="profondeur" step="1" placeholder="Valeur">
+      </div>
+      <div class="unit-switch" id="unitSwitch">
+        <button data-unit="maille" class="active">Mailles (2m)</button>
+        <button data-unit="metre">Mètres</button>
+      </div>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn-primary" id="calculerBtn">Calculer</button>
+      <button class="btn-reset" id="resetBtn">Reset général</button>
+    </div>
+  </div>
+
+  <div class="card" id="exportArea">
+    <div style="font-size:14px; font-weight:600;">Plan d'étayage</div>
+    <div id="planContainer" class="plan-svg">
+      <svg id="plan" width="100%" height="auto"></svg>
+    </div>
+
+    <div class="info-compo" id="compoInfo">
+      <span>🧱 Composition d’un étaie : Poteau + Vérin + Cales</span>
+      <button id="resetCompoBtn" class="btn-small">↩️ Réinitialiser compo</button>
+    </div>
+
+    <div id="results"></div>
+  </div>
+
+  <footer>v1.0 – outils terrain</footer>
+</div>
+
+<script>
+  // DOM elements
+  const largeurInput = document.getElementById('largeur');
+  const profondeurInput = document.getElementById('profondeur');
+  const unitBtns = document.querySelectorAll('#unitSwitch button');
+  let currentUnit = 'maille'; // 'maille' ou 'metre'
+  let commandeTexte = '';
+
+  // Load from localStorage
+  function loadFromStorage() {
+    const savedLargeur = localStorage.getItem('etayage_largeur');
+    const savedProfondeur = localStorage.getItem('etayage_profondeur');
+    const savedUnit = localStorage.getItem('etayage_unite');
+    if (savedLargeur) largeurInput.value = savedLargeur;
+    if (savedProfondeur) profondeurInput.value = savedProfondeur;
+    if (savedUnit === 'maille' || savedUnit === 'metre') {
+      currentUnit = savedUnit;
+      updateUnitButtons();
+    }
+  }
+
+  function saveToStorage() {
+    localStorage.setItem('etayage_largeur', largeurInput.value);
+    localStorage.setItem('etayage_profondeur', profondeurInput.value);
+    localStorage.setItem('etayage_unite', currentUnit);
+  }
+
+  function updateUnitButtons() {
+    unitBtns.forEach(btn => {
+      const unit = btn.getAttribute('data-unit');
+      if (unit === currentUnit) btn.classList.add('active');
+      else btn.classList.remove('active');
+    });
+  }
+
+  function toMailles(val, unit) {
+    if (unit === 'maille') return parseFloat(val);
+    return parseFloat(val) / 2;
+  }
+
+  function drawPlan(L, P) {
+    const svg = document.getElementById('plan');
+    const size = 70; // pixels par maille
+    const width = L * size;
+    const height = P * size;
+    svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+    let content = '';
+    // Grille
+    for (let x = 0; x <= L; x++) {
+      const pos = x * size;
+      content += `<line x1="${pos}" y1="0" x2="${pos}" y2="${height}" stroke="#aaa" stroke-width="1.5"/>`;
+    }
+    for (let y = 0; y <= P; y++) {
+      const pos = y * size;
+      content += `<line x1="0" y1="${pos}" x2="${width}" y2="${pos}" stroke="#aaa" stroke-width="1.5"/>`;
+    }
+    // Poteaux (cercles) et moises (traits)
+    for (let y = 0; y < P; y++) {
+      for (let x = 0; x < L; x++) {
+        const cx = (x + 0.5) * size;
+        const cy = (y + 0.5) * size;
+        content += `<circle cx="${cx}" cy="${cy}" r="8" fill="#7b5cff" stroke="#fff" stroke-width="2"/>`;
+        if (x < L - 1) {
+          const nx = (x + 1.5) * size;
+          content += `<line x1="${cx}" y1="${cy}" x2="${nx}" y2="${cy}" stroke="#7b5cff" stroke-width="5" stroke-linecap="round"/>`;
+        }
+      }
+    }
+    svg.innerHTML = content;
+  }
+
+  function calculer() {
+    let largeur = parseFloat(largeurInput.value);
+    let profondeur = parseFloat(profondeurInput.value);
+    if (isNaN(largeur)) largeur = 0;
+    if (isNaN(profondeur)) profondeur = 1;
+
+    const L_mailles = Math.round(toMailles(largeur, currentUnit));
+    const P_mailles = Math.round(toMailles(profondeur, currentUnit));
+    if (L_mailles < 1) {
+      alert('La largeur doit être au moins 1 maille (2m)');
+      return;
+    }
+    const largeur_m = L_mailles * 2;
+    const profondeur_m = P_mailles * 2;
+    const E = L_mailles * P_mailles;      // poteaux
+    const moises = (L_mailles - 1) * P_mailles;
+    const doubles_colliers = Math.ceil(moises / 2);
+    const poids_total = Math.round((E * 13.5) + (moises * 7));
+
+    commandeTexte = `Commande étayage
+
+Scène : ${largeur_m} m × ${profondeur_m} m
+
+Moises : ${moises}
+Poteaux : ${E}
+Vérins : ${E}
+Cales bois : ${E}
+Doubles colliers : ${doubles_colliers}
+Poids estimé : ${poids_total} kg`;
+
+    const resultsHtml = `
+      <div class="materialBlock">
+        <div class="materialTitle" style="font-size:20px; font-weight:700; margin-bottom:8px;">Matériel à commander</div>
+        <div style="font-size:13px; margin-bottom:10px;">Pour une scène de ${largeur_m} m × ${profondeur_m} m</div>
+        <p>Moises : ${moises}</p>
+        <p>Poteaux : ${E}</p>
+        <p>Vérins : ${E}</p>
+        <p>Cales bois : ${E}</p>
+        <p>Doubles colliers : ${doubles_colliers}</p>
+        <p style="font-size:13px; opacity:0.7;">Poids estimé : ${poids_total} kg</p>
+      </div>
+      <div class="btn-group">
+        <button id="exportImgBtn" class="btn-export">📸 Exporter (PNG)</button>
+        <button id="copyBtn" class="btn-copy">📋 Copier</button>
+        <button id="shareBtn" class="btn-share">📤 Envoyer</button>
+      </div>
+    `;
+
+    const resultsDiv = document.getElementById('results');
+    resultsDiv.innerHTML = resultsHtml;
+    drawPlan(L_mailles, P_mailles);
+
+    // Attacher les événements des nouveaux boutons
+    document.getElementById('exportImgBtn').onclick = exportPNG;
+    document.getElementById('copyBtn').onclick = copierCommande;
+    document.getElementById('shareBtn').onclick = partagerCommande;
+
+    saveToStorage();
+  }
+
+  function exportPNG() {
+    const element = document.getElementById('exportArea');
+    html2canvas(element, { scale: 2, backgroundColor: null }).then(canvas => {
+      const link = document.createElement('a');
+      link.download = 'commande_etayage.png';
+      link.href = canvas.toDataURL();
+      link.click();
+    }).catch(err => alert('Erreur capture : ' + err));
+  }
+
+  function copierCommande() {
+    navigator.clipboard.writeText(commandeTexte);
+    alert('Commande copiée');
+  }
+
+  function partagerCommande() {
+    if (navigator.share) {
+      navigator.share({ title: 'Commande étayage', text: commandeTexte }).catch(() => alert('Partage annulé'));
+    } else {
+      alert('Partage non disponible');
+    }
+  }
+
+  function resetAll() {
+    if (!confirm('⚠️ Tout effacer ? Les dimensions, le plan et les résultats seront effacés.')) return;
+    localStorage.removeItem('etayage_largeur');
+    localStorage.removeItem('etayage_profondeur');
+    localStorage.removeItem('etayage_unite');
+    largeurInput.value = '';
+    profondeurInput.value = '';
+    currentUnit = 'maille';
+    updateUnitButtons();
+    document.getElementById('results').innerHTML = '';
+    document.getElementById('plan').innerHTML = '';
+    document.getElementById('plan').setAttribute('viewBox', '0 0 100 100');
+    commandeTexte = '';
+    alert('Reset effectué');
+  }
+
+  function resetComposition() {
+    // Simple action : réafficher l'info (évite la disparition accidentelle)
+    const compoDiv = document.getElementById('compoInfo');
+    compoDiv.style.backgroundColor = 'rgba(123,92,255,0.15)';
+    setTimeout(() => { compoDiv.style.backgroundColor = ''; }, 300);
+    // Optionnel : alerte discrète
+    // alert('Composition standard d’un étaie : Poteau + Vérin + Cales');
+  }
+
+  // Unit switch handling
+  unitBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentUnit = btn.getAttribute('data-unit');
+      updateUnitButtons();
+      saveToStorage();
+    });
+  });
+
+  document.getElementById('calculerBtn').addEventListener('click', calculer);
+  document.getElementById('resetBtn').addEventListener('click', resetAll);
+  document.getElementById('resetCompoBtn').addEventListener('click', resetComposition);
+
+  // Initial load
+  loadFromStorage();
+  if (largeurInput.value && profondeurInput.value) calculer();
+</script>
+</body>
+</html>
