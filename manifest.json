@@ -1,0 +1,20 @@
+{
+  "name": "Stage Tools",
+  "short_name": "StageTools",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#e0d3bb",
+  "theme_color": "#1e3a5f",
+  "icons": [
+    {
+      "src": "stage-icon.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "stage-icon.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}
