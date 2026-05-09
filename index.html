@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stage Tools">
+<meta name="theme-color" content="#e0d3bb">
+<title>Stage Tools</title>
+<link rel="apple-touch-icon" href="stage-icon.jpg">
+<link rel="icon" type="image/jpeg" href="stage-icon.jpg">
+<link rel="manifest" href="manifest.json">
+
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  :root {
+    --bg: #e0d3bb;
+    --card: #ffffff;
+    --text: #1e293b;
+    --text-light: #5a4a2e;
+    --border: #cbbf9a;
+    --accent: #1e3a5f;
+    --shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    --card-radius: 24px;
+  }
+
+  body {
+    background: var(--bg);
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .container {
+    max-width: 600px;
+    width: 100%;
+    margin: auto;
+  }
+
+  h1 {
+    font-size: 32px;
+    color: var(--accent);
+    text-align: center;
+    margin-bottom: 8px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+
+  .sub {
+    text-align: center;
+    color: var(--text-light);
+    margin-bottom: 32px;
+    font-size: 14px;
+  }
+
+  .tools-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .tool-card {
+    background: var(--card);
+    border-radius: var(--card-radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    transition: transform 0.1s, box-shadow 0.1s;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    border: 1px solid var(--border);
+  }
+
+  .tool-card:active {
+    transform: scale(0.98);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  }
+
+  .icon-svg {
+    width: 60px;
+    flex-shrink: 0;
+  }
+
+  .icon-svg svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+  }
+
+  .tool-text h2 {
+    font-size: 20px;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+
+  .tool-text p {
+    font-size: 13px;
+    color: var(--text-light);
+    opacity: 0.8;
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 11px;
+    color: var(--text-light);
+    opacity: 0.6;
+  }
+
+  @media (max-width: 500px) {
+    body { padding: 16px; }
+    .tool-card { padding: 16px; gap: 12px; }
+    .icon-svg { width: 50px; }
+    .tool-text h2 { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Stage Tools</h1>
+  <div class="sub">Outils terrain pour le spectacle vivant</div>
+
+  <div class="tools-grid">
+    <!-- Tuile : Calcul praticables -->
+    <a href="praticables/index.html" class="tool-card">
+      <div class="icon-svg">
+        <svg viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg">
+          <rect x="5" y="5" width="90" height="40" rx="4" fill="#cbd5e1" stroke="#4c6e9e" stroke-width="1.5" />
+          <line x1="50" y1="5" x2="50" y2="45" stroke="#4c6e9e" stroke-width="1" opacity="0.5" />
+          <line x1="5" y1="25" x2="95" y2="25" stroke="#4c6e9e" stroke-width="1" opacity="0.5" />
+          <rect x="5" y="5" width="90" height="40" rx="4" fill="none" stroke="#1e3a5f" stroke-width="0.5" />
+        </svg>
+      </div>
+      <div class="tool-text">
+        <h2>Calcul praticables</h2>
+        <p>Modules, risers, sucres, export PNG et partage</p>
+      </div>
+    </a>
+
+    <!-- Tuile : Calcul étayage -->
+    <a href="etayage/index.html" class="tool-card">
+      <div class="icon-svg">
+        <svg viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg">
+          <rect x="5" y="5" width="90" height="40" rx="4" fill="#cbd5e1" stroke="#4c6e9e" stroke-width="1.5" />
+          <circle cx="25" cy="25" r="5" fill="#1e3a5f" />
+          <circle cx="50" cy="25" r="5" fill="#1e3a5f" />
+          <circle cx="75" cy="25" r="5" fill="#1e3a5f" />
+          <line x1="25" y1="25" x2="75" y2="25" stroke="#1e3a5f" stroke-width="3" />
+        </svg>
+      </div>
+      <div class="tool-text">
+        <h2>Calcul étayage</h2>
+        <p>Poteaux, moises, vérins, cales, doubles colliers</p>
+      </div>
+    </a>
+
+    <!-- Tuiles supplémentaires à copier/coller -->
+  </div>
+  <footer>v1.0 – outils terrain</footer>
+</div>
+</body>
+</html>
