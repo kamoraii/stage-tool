@@ -26,7 +26,7 @@
     background: linear-gradient(180deg, #6a5acd, #c056d5);
     min-height: 100vh;
     transition: background 0.3s, color 0.3s;
-    touch-action: pan-y;
+    touch-action: pan-y; /* Empêche le zoom horizontal */
   }
 
   body.dark {
@@ -61,6 +61,7 @@
     z-index: 1000;
     box-shadow: 0 2px 8px rgba(0,0,0,0.3);
     transition: transform 0.1s;
+    touch-action: manipulation;
   }
   .back-to-hub:active { transform: scale(0.96); }
 
@@ -70,10 +71,30 @@
     margin-bottom: 14px;
     box-shadow: 0 6px 14px rgba(0,0,0,0.15);
   }
+
+  /* Mise en valeur du bloc résultats */
   .results-card {
-    box-shadow: 0 12px 28px rgba(0,0,0,0.25), 0 0 0 2px rgba(106,90,205,0.3);
-    transition: box-shadow 0.2s;
-    overflow: hidden;
+    background: #fff9ef;  /* très léger crème */
+    border: 2px solid #7b5cff;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.25);
+    position: relative;
+  }
+  .results-card::before {
+    content: "📐 RÉSULTAT";
+    position: absolute;
+    top: -12px;
+    left: 16px;
+    background: #7b5cff;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 4px 12px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+  body.dark .results-card {
+    background: #2a2a2a;
   }
 
   .headerRow {
@@ -81,6 +102,8 @@
     justify-content: space-between;
     align-items: center;
     margin-top: 6px;
+    flex-wrap: wrap;
+    gap: 8px;
   }
   .headerRow h3 { margin: 0; font-size: 16px; }
   .headerRow select {
@@ -118,6 +141,7 @@
     border: 3px solid #7b5cff;
     background: #f5f3ff;
     font-weight: 600;
+    touch-action: manipulation;
   }
 
   .info-unite {
@@ -125,6 +149,7 @@
     color: #555;
     margin-top: 4px;
     opacity: 0.7;
+    min-height: 18px;
   }
   body.dark .info-unite { color: #ccc; }
 
@@ -157,6 +182,7 @@
     font-weight: bold;
     cursor: pointer;
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    touch-action: manipulation;
   }
   body.dark .theme-toggle {
     background: #333;
@@ -207,15 +233,21 @@
     font-size: 12px;
     margin-left: 8px;
     cursor: pointer;
+    touch-action: manipulation;
   }
 
-  #plan {
+  /* Conteneur SVG avec calcul dynamique de taille */
+  .plan-container {
     width: 100%;
+    overflow-x: auto;
+    text-align: center;
     margin-top: 10px;
+  }
+  #plan {
     background: #fafafa;
     border-radius: 8px;
-  }
-  svg {
+    display: block;
+    margin: 0 auto;
     max-width: 100%;
     height: auto;
   }
@@ -227,29 +259,29 @@
 
   <div class="card">
     <div class="headerRow">
-      <h3>LARGEUR (mailles ou mètres)</h3>
+      <h3>LARGEUR</h3>
       <select id="largeur_unit">
-        <option value="maille">mailles</option>
         <option value="metre">mètres</option>
+        <option value="maille">mailles</option>
       </select>
     </div>
     <div class="measureRow">
       <button class="dec" data-target="largeur" data-unit="largeur_unit">−</button>
-      <input id="largeur" type="number" step="1" value="1">
+      <input id="largeur" type="number" step="1" value="0">
       <button class="inc" data-target="largeur" data-unit="largeur_unit">+</button>
     </div>
     <div id="largeur_info" class="info-unite"></div>
 
     <div class="headerRow">
-      <h3>PROFONDEUR (mailles ou mètres)</h3>
+      <h3>PROFONDEUR</h3>
       <select id="profondeur_unit">
-        <option value="maille">mailles</option>
         <option value="metre">mètres</option>
+        <option value="maille">mailles</option>
       </select>
     </div>
     <div class="measureRow">
       <button class="dec" data-target="profondeur" data-unit="profondeur_unit">−</button>
-      <input id="profondeur" type="number" step="1" value="1">
+      <input id="profondeur" type="number" step="1" value="0">
       <button class="inc" data-target="profondeur" data-unit="profondeur_unit">+</button>
     </div>
     <div id="profondeur_info" class="info-unite"></div>
@@ -259,9 +291,11 @@
   </div>
 
   <div class="results-card" id="exportArea">
-    <div style="padding: 12px;">
+    <div style="padding: 12px; padding-top: 20px;">
       <h3 style="margin:0 0 6px;">Plan d'étayage</h3>
-      <svg id="plan"></svg>
+      <div class="plan-container">
+        <svg id="plan"></svg>
+      </div>
 
       <div class="compo-panel" id="compoPanel">
         <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -311,7 +345,7 @@
   let nbCalesParPoteau = 1;
   let commandeTexte = "";
 
-  // Gestion du texte info unité
+  // Gestion du texte info unité (apparaît seulement si on sélectionne "mailles")
   function updateUnitInfos() {
     const unitL = largeurUnit.value;
     const unitP = profondeurUnit.value;
@@ -320,53 +354,28 @@
   }
   largeurUnit.addEventListener('change', updateUnitInfos);
   profondeurUnit.addEventListener('change', updateUnitInfos);
-  updateUnitInfos();
 
-  // Fonctions de conversion
+  // Conversion
   function toMaille(valeur, unit) {
     if (unit === 'maille') return parseFloat(valeur);
     else return parseFloat(valeur) / 2;
   }
 
-  function toMetre(valeur, unit) {
-    if (unit === 'maille') return parseFloat(valeur) * 2;
-    else return parseFloat(valeur);
-  }
-
-  // Incréments / décréments (pas = 1 dans l'unité choisie)
-  document.querySelectorAll('.inc, .dec').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const targetId = btn.dataset.target;
-      const unitId = btn.dataset.unit;
-      const input = document.getElementById(targetId);
-      const unit = document.getElementById(unitId).value;
-      let val = parseFloat(input.value);
-      if (isNaN(val)) val = 1;
-      const delta = btn.classList.contains('inc') ? 1 : -1;
-      let newVal = val + delta;
-      if (newVal < 1) newVal = 1;
-      input.value = newVal;
-      // On ne recalcule pas automatiquement, seulement après validation
-    });
-  });
-
-  // Mise à jour de l'affichage statique de la composition
-  function updateCompoStatic() {
-    if (nbVerinsParPoteau === 1 && nbCalesParPoteau === 1) {
-      compoStatic.innerText = 'Poteau + Vérin + Cales';
-    } else {
-      compoStatic.innerText = `Poteau + ${nbVerinsParPoteau} vérin${nbVerinsParPoteau>1?'s':''} + ${nbCalesParPoteau} cale${nbCalesParPoteau>1?'s':''}`;
-    }
-  }
-
-  // Dessin du plan (taille réduite : 35px par maille)
+  // Dessin du plan avec taille dynamique pour éviter le scroll
   function drawPlan(L, P) {
     const svg = document.getElementById('plan');
-    const cellSize = 35; // taille réduite
+    // Taille max souhaitée pour le côté le plus grand (en pixels)
+    const maxSize = 350;
+    const maxMaille = Math.max(L, P);
+    let cellSize = 35;
+    if (maxMaille > 0) {
+      cellSize = Math.min(35, maxSize / maxMaille);
+    }
     const width = L * cellSize;
     const height = P * cellSize;
     svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
-    svg.setAttribute('width', '100%');
+    svg.setAttribute('width', width);
+    svg.setAttribute('height', height);
     let content = '';
     // Grille
     for (let x = 0; x <= L; x++) {
@@ -382,7 +391,8 @@
       for (let x = 0; x < L; x++) {
         const cx = (x + 0.5) * cellSize;
         const cy = (y + 0.5) * cellSize;
-        content += `<circle cx="${cx}" cy="${cy}" r="5" fill="#7b5cff" stroke="#fff" stroke-width="1.5"/>`;
+        const radius = Math.max(3, cellSize * 0.15);
+        content += `<circle cx="${cx}" cy="${cy}" r="${radius}" fill="#7b5cff" stroke="#fff" stroke-width="1.5"/>`;
         if (x < L - 1) {
           const nx = (x + 1.5) * cellSize;
           content += `<line x1="${cx}" y1="${cy}" x2="${nx}" y2="${cy}" stroke="#7b5cff" stroke-width="3" stroke-linecap="round"/>`;
@@ -392,20 +402,22 @@
     svg.innerHTML = content;
   }
 
-  // Calcul et affichage (appelé par Valider)
+  // Calcul et affichage
   function calculerEtAfficher() {
     let largeur = parseFloat(largeurInput.value);
     let profondeur = parseFloat(profondeurInput.value);
-    if (isNaN(largeur)) largeur = 1;
-    if (isNaN(profondeur)) profondeur = 1;
+    if (isNaN(largeur)) largeur = 0;
+    if (isNaN(profondeur)) profondeur = 0;
 
     const unitL = largeurUnit.value;
     const unitP = profondeurUnit.value;
+    let L_mailles = Math.round(toMaille(largeur, unitL));
+    let P_mailles = Math.round(toMaille(profondeur, unitP));
+    if (L_mailles < 0) L_mailles = 0;
+    if (P_mailles < 0) P_mailles = 0;
+    const L = L_mailles;
+    const P = P_mailles;
 
-    const L_mailles = Math.round(toMaille(largeur, unitL));
-    const P_mailles = Math.round(toMaille(profondeur, unitP));
-    const L = Math.max(1, L_mailles);
-    const P = Math.max(1, P_mailles);
     const largeur_m = L * 2;
     const profondeur_m = P * 2;
     const E = L * P;
@@ -427,27 +439,31 @@ Doubles colliers : ${doubles_colliers}
 Poids estimé : ${poids_total} kg`;
 
     const resultsDiv = document.getElementById('results');
-    resultsDiv.innerHTML = `
-      <div class="materialBlock">
-        <div class="materialTitle">Matériel à commander</div>
-        <div class="sceneInfo">Pour une scène de ${largeur_m} m × ${profondeur_m} m</div>
-        <p>Moises : ${moises}</p>
-        <p>Poteaux : ${E}</p>
-        <p>Vérins : ${verins}</p>
-        <p>Cales bois : ${cales}</p>
-        <p>Doubles colliers : ${doubles_colliers}</p>
-        <p style="font-size:13px;color:#666">Poids estimé : ${poids_total} kg</p>
-      </div>
-      <button class="main export" onclick="exportCommande()">📸 Exporter (PNG)</button>
-      <button class="main copy" onclick="copierCommande()">📋 Copier</button>
-      <button class="main share" onclick="partagerCommande()">📤 Envoyer</button>
-    `;
-
-    drawPlan(L, P);
-    sauvegarder(); // sauvegarde des valeurs courantes (sauf paramètres composition déjà sauvegardés)
+    if (L === 0 || P === 0) {
+      resultsDiv.innerHTML = '<p style="padding:16px; text-align:center;">Veuillez entrer des dimensions > 0 et valider.</p>';
+      drawPlan(0, 0);
+    } else {
+      resultsDiv.innerHTML = `
+        <div class="materialBlock">
+          <div class="materialTitle">Matériel à commander</div>
+          <div class="sceneInfo">Pour une scène de ${largeur_m} m × ${profondeur_m} m</div>
+          <p>Moises : ${moises}</p>
+          <p>Poteaux : ${E}</p>
+          <p>Vérins : ${verins}</p>
+          <p>Cales bois : ${cales}</p>
+          <p>Doubles colliers : ${doubles_colliers}</p>
+          <p style="font-size:13px;color:#666">Poids estimé : ${poids_total} kg</p>
+        </div>
+        <button class="main export" onclick="exportCommande()">📸 Exporter (PNG)</button>
+        <button class="main copy" onclick="copierCommande()">📋 Copier</button>
+        <button class="main share" onclick="partagerCommande()">📤 Envoyer</button>
+      `;
+      drawPlan(L, P);
+    }
+    sauvegarder();
   }
 
-  // Sauvegarde locale (dimensions, unités, composition)
+  // Sauvegarde
   function sauvegarder() {
     localStorage.setItem('etayage_largeur', largeurInput.value);
     localStorage.setItem('etayage_profondeur', profondeurInput.value);
@@ -469,33 +485,59 @@ Poids estimé : ${poids_total} kg`;
     nbCalesInput.value = nbCalesParPoteau;
     const theme = localStorage.getItem('etayage_theme') === 'true';
     if (theme) document.body.classList.add('dark');
-    updateCompoStatic();
+
     updateUnitInfos();
-    // On ne calcule pas automatiquement à l'ouverture, l'utilisateur devra valider
-    // Mais on peut afficher un plan vierge ou rien. Pour éviter un affichage vide,
-    // on pourrait lancer un premier calcul si jamais il n'y a rien. Je propose de ne rien afficher,
-    // laissez l'utilisateur cliquer sur Valider. Cependant, pour une meilleure expérience,
-    // je vais afficher un message "Cliquez sur Valider".
+    updateCompoStatic();
+
+    // Si aucune valeur sauvegardée, on force zéro et mètres
+    if (!localStorage.getItem('etayage_largeur')) {
+      largeurInput.value = 0;
+      profondeurInput.value = 0;
+      largeurUnit.value = 'metre';
+      profondeurUnit.value = 'metre';
+    }
+    // Affichage initial vide
     document.getElementById('results').innerHTML = '<p style="text-align:center; padding:12px;">Cliquez sur "Valider" pour voir le plan et la commande.</p>';
     document.getElementById('plan').innerHTML = '';
   }
 
-  // Reset général : remet largeur et profondeur à 1 maille (2m si unité mètre)
+  function updateCompoStatic() {
+    if (nbVerinsParPoteau === 1 && nbCalesParPoteau === 1) {
+      compoStatic.innerText = 'Poteau + Vérin + Cales';
+    } else {
+      compoStatic.innerText = `Poteau + ${nbVerinsParPoteau} vérin${nbVerinsParPoteau>1?'s':''} + ${nbCalesParPoteau} cale${nbCalesParPoteau>1?'s':''}`;
+    }
+  }
+
+  // Reset général : remet tout à zéro et unités sur mètres
   function resetGeneral() {
-    if (confirm('⚠️ Reset général : les dimensions de la scène seront réinitialisées (1 maille). La composition de l’étaie n’est pas modifiée.')) {
-      // Remettre à 1 maille quel que soit l'unité affichée
-      largeurInput.value = '1';
-      profondeurInput.value = '1';
-      // On peut aussi remettre les unités à "maille" ? L'utilisateur ne l'a pas demandé, donc on conserve l'unité sélectionnée.
-      // On ne change ni les unités, ni la composition.
-      // On efface l'affichage (résultats et plan)
+    if (confirm('⚠️ Reset général : les dimensions de la scène seront remises à zéro (mètres). La composition de l’étaie n’est pas modifiée.')) {
+      largeurInput.value = 0;
+      profondeurInput.value = 0;
+      largeurUnit.value = 'metre';
+      profondeurUnit.value = 'metre';
+      updateUnitInfos();
       document.getElementById('results').innerHTML = '<p style="text-align:center; padding:12px;">Cliquez sur "Valider" pour voir le plan et la commande.</p>';
       document.getElementById('plan').innerHTML = '';
       sauvegarder();
     }
   }
 
-  // Gestion du panneau de composition
+  // Gestion des incréments/décréments (pas de 1)
+  document.querySelectorAll('.inc, .dec').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const targetId = btn.dataset.target;
+      const input = document.getElementById(targetId);
+      let val = parseFloat(input.value);
+      if (isNaN(val)) val = 0;
+      const delta = btn.classList.contains('inc') ? 1 : -1;
+      let newVal = val + delta;
+      if (newVal < 0) newVal = 0;
+      input.value = newVal;
+    });
+  });
+
+  // Panneau de composition
   editBtn.addEventListener('click', () => {
     const isVisible = compoControls.style.display === 'block';
     compoControls.style.display = isVisible ? 'none' : 'block';
@@ -510,7 +552,6 @@ Poids estimé : ${poids_total} kg`;
     nbVerinsParPoteau = val;
     updateCompoStatic();
     sauvegarder();
-    // Attention : après avoir changé la composition, l'affichage n'est pas mis à jour tant qu'on n'a pas re-validé.
   });
   nbCalesInput.addEventListener('change', () => {
     let val = parseInt(nbCalesInput.value);
@@ -529,7 +570,7 @@ Poids estimé : ${poids_total} kg`;
     sauvegarder();
   });
 
-  // Événements des boutons
+  // Boutons
   validerBtn.addEventListener('click', calculerEtAfficher);
   resetBtn.addEventListener('click', resetGeneral);
 
@@ -559,7 +600,7 @@ Poids estimé : ${poids_total} kg`;
     sauvegarder();
   };
 
-  // Chargement initial
+  // Lancement
   charger();
 </script>
 </body>
