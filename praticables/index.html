@@ -277,6 +277,27 @@
     gap: 10px;
     margin-top: 18px;
   }
+
+  /* Bouton retour hub flottant */
+  .back-to-hub {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(8px);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    transition: transform 0.1s;
+    touch-action: manipulation;
+  }
+  .back-to-hub:active { transform: scale(0.96); }
 </style>
 </head>
 <body>
@@ -332,6 +353,8 @@
     <button class="orange" onclick="shareCommande()">📤 Envoyer</button>
   </div>
 </div>
+
+<a href="../index.html" class="back-to-hub">🏠 Hub</a>
 
 <script>
   let modules = [];
