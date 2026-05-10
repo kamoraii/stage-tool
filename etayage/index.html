@@ -236,26 +236,70 @@
   /* ═══════════════════════════════════════════
      CARTE RÉSULTATS — EFFET 3D TRÈS PRONONCÉ
   ═══════════════════════════════════════════ */
-  .results-card {
-    background: linear-gradient(148deg, #ede4ff 0%, #e4eeff 45%, #ffeef5 100%);
-    border-radius: 20px;
-    margin-bottom: 14px;
-    margin-top: 10px;
-    border: 2.5px solid #7b5cff;
+.results-card {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.95) 0%,
+            rgba(236,240,255,0.96) 45%,
+            rgba(255,245,252,0.96) 100%
+        );
+
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    border-radius: 26px;
+
+    margin-bottom: 22px;
+    margin-top: 18px;
+
+    border: 1px solid rgba(255,255,255,0.45);
+
     position: relative;
 
-    /* Tranches empilées visibles = effet volume/extrusion */
-    box-shadow:
-      0 0 0 1px rgba(255,255,255,0.55) inset,  /* reflet intérieur */
-      0  4px 0 0 #5538cc,                       /* tranche 1 */
-      0  7px 0 0 #3d27a0,                       /* tranche 2 */
-      0 10px 0 0 rgba(45,20,130,0.65),          /* tranche 3 */
-      0 13px 0 0 rgba(20,8,70,0.35),            /* tranche fondue */
-      0 18px 32px rgba(0,0,0,0.38),             /* ombre portée */
-      0 36px 60px rgba(90,40,200,0.22),         /* halo violet */
-      0  0  30px rgba(123,92,255,0.16);         /* halo latéral */
+    overflow: hidden;
 
-    transform: translateY(-3px);
+    box-shadow:
+        0 2px 4px rgba(255,255,255,0.55) inset,
+        0 12px 24px rgba(0,0,0,0.18),
+        0 24px 55px rgba(80,40,200,0.20),
+        0 0 40px rgba(123,92,255,0.12);
+
+    transform: translateY(-4px);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.results-card:hover{
+    transform: translateY(-8px);
+
+    box-shadow:
+        0 2px 4px rgba(255,255,255,0.6) inset,
+        0 18px 35px rgba(0,0,0,0.25),
+        0 35px 75px rgba(90,40,200,0.28),
+        0 0 55px rgba(123,92,255,0.18);
+}
+
+.results-card::after{
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    border-radius: 26px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,0.20),
+            transparent 40%
+        );
+
+    pointer-events: none;
+}
     transition: transform 0.18s ease, box-shadow 0.18s ease;
   }
 
