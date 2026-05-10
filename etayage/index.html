@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Etayage">
-<meta name="theme-color" content="#e0d3bb">
+<meta name="theme-color" content="#6a5acd">
 <title>Calculateur d’étayage de scène</title>
 <link rel="apple-touch-icon" href="icone.jpg">
 <link rel="manifest" href="manifest.json">
@@ -19,292 +19,332 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  :root {
-    --bg: #e0d3bb;
-    --card: #ffffff;
-    --text: #1e293b;
-    --text-light: #5a4a2e;
-    --border: #cbbf9a;
-    --accent: #7b5cff;
-    --accent2: #9b7cff;
-    --green: #2ca36b;
-    --orange: #ff8b3d;
-    --danger: #d64545;
-    --shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
-    --card-radius: 20px;
-  }
-
-  .dark {
-    --bg: #0f172a;
-    --card: #1e293b;
-    --text: #f1f5f9;
-    --text-light: #94a3b8;
-    --border: #334155;
-    --accent: #7b5cff;
-    --accent2: #9b7cff;
-    --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  }
-
   body {
+    font-family: -apple-system, BlinkMacSystemFont, Arial;
     margin: 0;
-    padding: 12px;
-    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    transition: background 0.2s, color 0.2s;
+    padding: 16px;
+    background: linear-gradient(180deg, #6a5acd, #c056d5);
+    min-height: 100vh;
+    transition: 0.3s;
     touch-action: pan-y;
   }
 
-  button, input, select, .cell {
-    touch-action: manipulation;
+  /* Version sombre (optionnelle, mais on garde le comportement) */
+  .dark {
+    background: #121212;
+    color: #eee;
   }
 
   .container {
-    max-width: 600px;
-    margin: 0 auto;
+    max-width: 420px;
+    margin: auto;
   }
+
+  /* Retour hub */
+  .back-link {
+    display: inline-block;
+    margin-bottom: 12px;
+    background: rgba(255,255,255,0.2);
+    padding: 6px 12px;
+    border-radius: 30px;
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    backdrop-filter: blur(4px);
+  }
+  .back-link:active { transform: scale(0.97); }
 
   .card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--card-radius);
+    background: white;
     padding: 16px;
-    margin-bottom: 16px;
-    box-shadow: var(--shadow);
-  }
-
-  h1 {
-    font-size: 24px;
-    text-align: center;
-    margin: 0 0 4px;
-    color: #1e3a5f;
-  }
-  .dark h1 { color: #f1f5f9; }
-
-  .subtitle {
-    text-align: center;
-    font-size: 13px;
-    color: var(--text-light);
-    margin-bottom: 20px;
-  }
-
-  .row {
-    margin-bottom: 16px;
-  }
-  .row label {
-    display: block;
-    font-weight: 600;
-    font-size: 14px;
-    margin-bottom: 6px;
-    color: var(--text);
-  }
-  .dim-control {
-    display: flex;
-    gap: 10px;
-    align-items: flex-end;
-    flex-wrap: wrap;
-  }
-  .dim-control select, .dim-control input {
-    padding: 10px;
     border-radius: 14px;
-    border: 1px solid var(--border);
-    background: var(--card);
-    color: var(--text);
-    font-size: 16px;
-    flex: 1;
+    margin-bottom: 14px;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.15);
   }
-  .unit-switch {
-    display: flex;
-    gap: 10px;
-    margin-top: 8px;
-  }
-  .unit-switch button {
-    flex: 1;
-    background: var(--card);
-    border: 1px solid var(--border);
-    color: var(--text);
-    border-radius: 30px;
-    padding: 8px;
-    font-size: 13px;
-  }
-  .unit-switch button.active {
-    background: var(--accent);
-    color: white;
-    border-color: var(--accent);
-  }
+  .dark .card { background: #1e1e1e; }
 
-  button {
-    border: none;
-    border-radius: 40px;
-    padding: 12px;
-    font-weight: 600;
-    font-size: 14px;
-    cursor: pointer;
-    transition: 0.1s ease;
-    color: white;
-    background: #475569;
-    touch-action: manipulation;
+  /* Section résultats avec un liseré 3D */
+  .results-card {
+    background: white;
+    border-radius: 14px;
+    margin-bottom: 14px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    border: 1px solid rgba(220, 60, 60, 0.5);
+    transition: box-shadow 0.2s;
   }
-  button:active { transform: scale(0.97); opacity: 0.9; }
+  .dark .results-card { background: #1e1e1e; border-color: #d64545; }
 
-  .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent2)); }
-  .btn-reset { background: var(--danger); }
-  .btn-export { background: var(--green); }
-  .btn-copy { background: #5b57ff; }
-  .btn-share { background: var(--orange); }
-
-  .info-compo {
-    background: rgba(123,92,255,0.1);
-    border-radius: 16px;
-    padding: 10px;
-    margin: 12px 0;
-    font-size: 13px;
+  .headerRow {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-top: 6px;
   }
-  .btn-small {
-    padding: 6px 12px;
-    font-size: 12px;
-    background: var(--accent);
+  .headerRow h3 { margin: 0; font-size: 16px; }
+  .headerRow select {
+    width: 110px;
+    height: 36px;
+    border-radius: 8px;
+    border: 2px solid #7b5cff;
+    background: #f5f3ff;
   }
 
-  .plan-svg {
-    width: 100%;
-    background: rgba(0,0,0,0.03);
-    border-radius: 16px;
-    margin-top: 10px;
+  .measureRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
   }
-  svg {
-    width: 100%;
-    max-width: 100%;
-    height: auto;
+  .measureRow button {
+    width: 38px;
+    height: 38px;
+    font-size: 20px;
+    background: #7b5cff;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    touch-action: manipulation;
   }
+  .measureRow button:active { transform: scale(0.95); }
+  .measureRow input {
+    width: 80px;
+    padding: 8px;
+    font-size: 18px;
+    text-align: center;
+    border-radius: 10px;
+    border: 3px solid #7b5cff;
+    background: #f5f3ff;
+    font-weight: 600;
+  }
+
+  button.main {
+    width: 100%;
+    padding: 11px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    margin-top: 8px;
+    color: white;
+    touch-action: manipulation;
+  }
+  button.main:active { transform: scale(0.97); }
+  .calc { background: #7b5cff; }
+  .reset { background: #d84343; }
+  .export { background: #2e9e53; }
+  .copy { background: #5b57ff; }
+  .share { background: #ff9800; }
 
   .materialBlock {
-    background: rgba(123,92,255,0.05);
-    border-radius: 16px;
-    padding: 14px;
-    margin: 12px 0;
+    background: #f1edff;
+    border-radius: 10px;
+    padding: 12px;
+    margin-top: 10px;
+  }
+  .dark .materialBlock { background: #2b2b2b; }
+  .materialTitle {
+    font-size: 22px;
+    font-weight: 700;
+    color: #7b5cff;
+    margin-bottom: 6px;
   }
 
-  .btn-group {
+  /* Section composition personnalisable */
+  .compo-panel {
+    background: #f9f3e0;
+    padding: 10px;
+    border-radius: 12px;
+    margin: 10px 0;
+  }
+  .dark .compo-panel { background: #2a2a2a; }
+  .compo-row {
     display: flex;
     gap: 10px;
+    align-items: center;
     flex-wrap: wrap;
-    margin-top: 12px;
+    margin-top: 8px;
   }
-  .btn-group button {
-    flex: 1;
+  .compo-row label { font-weight: bold; font-size: 13px; }
+  .compo-row input {
+    width: 60px;
+    padding: 6px;
+    border-radius: 8px;
+    border: 1px solid #aaa;
+    text-align: center;
+  }
+  .edit-btn {
+    background: #7b5cff;
+    border: none;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    margin-left: 8px;
   }
 
-  footer {
-    text-align: center;
-    font-size: 11px;
-    color: var(--text-light);
-    margin-top: 20px;
+  .sceneInfo { font-size: 14px; color: #555; margin-bottom: 10px; }
+  .dark .sceneInfo { color: #aaa; }
+
+  #plan {
+    width: 100%;
+    margin-top: 10px;
+    background: #fafafa;
+    border-radius: 8px;
   }
 </style>
 </head>
 <body>
 <div class="container">
-  <h1>Calculateur d'étayage</h1>
-  <div class="subtitle">Dimensions de la scène (mailles 2×2m ou mètres)</div>
+  <a href="../index.html" class="back-link">← Stage Tools</a>
 
   <div class="card">
-    <div class="row">
-      <label>Largeur</label>
-      <div class="dim-control">
-        <input type="number" id="largeur" step="1" placeholder="Valeur">
-        <span style="font-weight:bold; margin:0 4px;">x</span>
-        <input type="number" id="profondeur" step="1" placeholder="Valeur">
-      </div>
-      <div class="unit-switch" id="unitSwitch">
-        <button data-unit="maille" class="active">Mailles (2m)</button>
-        <button data-unit="metre">Mètres</button>
-      </div>
+    <div class="headerRow">
+      <h3>LARGEUR (mailles ou mètres)</h3>
+      <select id="largeur_unit">
+        <option value="maille">mailles</option>
+        <option value="metre">mètres</option>
+      </select>
+    </div>
+    <div class="measureRow">
+      <button onclick="changeValue('largeur','largeur_unit',-1)">−</button>
+      <input id="largeur" type="number" value="0">
+      <button onclick="changeValue('largeur','largeur_unit',1)">+</button>
     </div>
 
-    <div class="btn-group">
-      <button class="btn-primary" id="calculerBtn">Calculer</button>
-      <button class="btn-reset" id="resetBtn">Reset général</button>
+    <div class="headerRow">
+      <h3>PROFONDEUR (mailles ou mètres)</h3>
+      <select id="profondeur_unit">
+        <option value="maille">mailles</option>
+        <option value="metre">mètres</option>
+      </select>
     </div>
+    <div class="measureRow">
+      <button onclick="changeValue('profondeur','profondeur_unit',-1)">−</button>
+      <input id="profondeur" type="number" value="0">
+      <button onclick="changeValue('profondeur','profondeur_unit',1)">+</button>
+    </div>
+
+    <button class="main calc" onclick="calculer()">Calculer</button>
+    <button class="main reset" onclick="resetAll()">Reset</button>
   </div>
 
-  <div class="card" id="exportArea">
-    <div style="font-size:14px; font-weight:600;">Plan d'étayage</div>
-    <div id="planContainer" class="plan-svg">
-      <svg id="plan" width="100%" height="auto"></svg>
-    </div>
+  <div class="results-card" id="exportArea">
+    <div style="padding: 12px;">
+      <h3 style="margin:0 0 6px;">Plan d'étayage</h3>
+      <svg id="plan"></svg>
 
-    <div class="info-compo" id="compoInfo">
-      <span>🧱 Composition d’un étaie : Poteau + Vérin + Cales</span>
-      <button id="resetCompoBtn" class="btn-small">↩️ Réinitialiser compo</button>
-    </div>
+      <!-- Composition d’un étaie personnalisable -->
+      <div class="compo-panel" id="compoPanel">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span>🧱 Composition d’un étaie</span>
+          <button class="edit-btn" id="editCompoBtn">Modifier</button>
+        </div>
+        <div id="compoControls" style="display: none;">
+          <div class="compo-row">
+            <label>Vérins par poteau :</label>
+            <input type="number" id="nbVerins" min="0" step="1" value="1">
+          </div>
+          <div class="compo-row">
+            <label>Cales bois par poteau :</label>
+            <input type="number" id="nbCales" min="0" step="1" value="1">
+          </div>
+          <button class="edit-btn" id="resetCompoBtn" style="background:#d84343;">↩️ Réinitialiser composition</button>
+        </div>
+        <div id="compoStatic">Poteau + Vérin + Cales</div>
+      </div>
 
-    <div id="results"></div>
+      <div id="results"></div>
+    </div>
   </div>
-
-  <footer>v1.0 – outils terrain</footer>
 </div>
 
 <script>
-  // DOM elements
+  // Paramètres personnalisables
+  let nbVerinsParPoteau = 1;
+  let nbCalesParPoteau = 1;
+
+  // Éléments DOM
   const largeurInput = document.getElementById('largeur');
   const profondeurInput = document.getElementById('profondeur');
-  const unitBtns = document.querySelectorAll('#unitSwitch button');
-  let currentUnit = 'maille'; // 'maille' ou 'metre'
-  let commandeTexte = '';
+  const largeurUnit = document.getElementById('largeur_unit');
+  const profondeurUnit = document.getElementById('profondeur_unit');
+  const nbVerinsInput = document.getElementById('nbVerins');
+  const nbCalesInput = document.getElementById('nbCales');
+  const editBtn = document.getElementById('editCompoBtn');
+  const compoControls = document.getElementById('compoControls');
+  const resetCompoBtn = document.getElementById('resetCompoBtn');
+  const compoStatic = document.getElementById('compoStatic');
 
-  // Load from localStorage
-  function loadFromStorage() {
-    const savedLargeur = localStorage.getItem('etayage_largeur');
-    const savedProfondeur = localStorage.getItem('etayage_profondeur');
-    const savedUnit = localStorage.getItem('etayage_unite');
-    if (savedLargeur) largeurInput.value = savedLargeur;
-    if (savedProfondeur) profondeurInput.value = savedProfondeur;
-    if (savedUnit === 'maille' || savedUnit === 'metre') {
-      currentUnit = savedUnit;
-      updateUnitButtons();
+  let commandeTexte = "";
+
+  // Gestion de l'affichage des contrôles de composition
+  editBtn.addEventListener('click', () => {
+    const isVisible = compoControls.style.display === 'flex' || compoControls.style.display === 'block';
+    compoControls.style.display = isVisible ? 'none' : 'block';
+    if (!isVisible) {
+      nbVerinsInput.value = nbVerinsParPoteau;
+      nbCalesInput.value = nbCalesParPoteau;
     }
-  }
+  });
 
-  function saveToStorage() {
-    localStorage.setItem('etayage_largeur', largeurInput.value);
-    localStorage.setItem('etayage_profondeur', profondeurInput.value);
-    localStorage.setItem('etayage_unite', currentUnit);
-  }
+  // Réinitialiser composition
+  resetCompoBtn.addEventListener('click', () => {
+    nbVerinsParPoteau = 1;
+    nbCalesParPoteau = 1;
+    nbVerinsInput.value = 1;
+    nbCalesInput.value = 1;
+    compoStatic.innerText = 'Poteau + Vérin + Cales';
+    compoControls.style.display = 'none';
+    // Recalculer avec les nouvelles valeurs
+    calculer();
+  });
 
-  function updateUnitButtons() {
-    unitBtns.forEach(btn => {
-      const unit = btn.getAttribute('data-unit');
-      if (unit === currentUnit) btn.classList.add('active');
-      else btn.classList.remove('active');
-    });
+  // Sauvegarder les modifications de composition
+  nbVerinsInput.addEventListener('change', () => {
+    let val = parseInt(nbVerinsInput.value);
+    if (isNaN(val)) val = 1;
+    nbVerinsParPoteau = Math.max(0, val);
+    calculer();
+  });
+  nbCalesInput.addEventListener('change', () => {
+    let val = parseInt(nbCalesInput.value);
+    if (isNaN(val)) val = 1;
+    nbCalesParPoteau = Math.max(0, val);
+    calculer();
+  });
+
+  function changeValue(id, unitId, delta) {
+    const input = document.getElementById(id);
+    const unit = document.getElementById(unitId).value;
+    let value = parseFloat(input.value) || 0;
+    if (unit === "metre") value += delta * 2;
+    else value += delta;
+    if (value < 0) value = 0;
+    input.value = value;
+    calculer();
   }
 
   function toMailles(val, unit) {
-    if (unit === 'maille') return parseFloat(val);
-    return parseFloat(val) / 2;
+    if (unit === "maille") return val;
+    return val / 2;
   }
 
   function drawPlan(L, P) {
-    const svg = document.getElementById('plan');
-    const size = 70; // pixels par maille
+    const svg = document.getElementById("plan");
+    const size = 70;
     const width = L * size;
     const height = P * size;
-    svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
-    let content = '';
-    // Grille
+    svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+    svg.setAttribute("width", "100%");
+    let content = "";
     for (let x = 0; x <= L; x++) {
       const pos = x * size;
-      content += `<line x1="${pos}" y1="0" x2="${pos}" y2="${height}" stroke="#aaa" stroke-width="1.5"/>`;
+      content += `<line x1="${pos}" y1="0" x2="${pos}" y2="${height}" stroke="#cccccc" stroke-width="1.5"/>`;
     }
     for (let y = 0; y <= P; y++) {
       const pos = y * size;
-      content += `<line x1="0" y1="${pos}" x2="${width}" y2="${pos}" stroke="#aaa" stroke-width="1.5"/>`;
+      content += `<line x1="0" y1="${pos}" x2="${width}" y2="${pos}" stroke="#cccccc" stroke-width="1.5"/>`;
     }
-    // Poteaux (cercles) et moises (traits)
     for (let y = 0; y < P; y++) {
       for (let x = 0; x < L; x++) {
         const cx = (x + 0.5) * size;
@@ -325,18 +365,20 @@
     if (isNaN(largeur)) largeur = 0;
     if (isNaN(profondeur)) profondeur = 1;
 
-    const L_mailles = Math.round(toMailles(largeur, currentUnit));
-    const P_mailles = Math.round(toMailles(profondeur, currentUnit));
+    const L_mailles = Math.round(toMailles(largeur, largeurUnit.value));
+    const P_mailles = Math.round(toMailles(profondeur, profondeurUnit.value));
     if (L_mailles < 1) {
-      alert('La largeur doit être au moins 1 maille (2m)');
+      alert("Largeur minimum : 1 maille (2 mètres)");
       return;
     }
     const largeur_m = L_mailles * 2;
     const profondeur_m = P_mailles * 2;
-    const E = L_mailles * P_mailles;      // poteaux
+    const E = L_mailles * P_mailles;                       // poteaux
     const moises = (L_mailles - 1) * P_mailles;
     const doubles_colliers = Math.ceil(moises / 2);
-    const poids_total = Math.round((E * 13.5) + (moises * 7));
+    const verins = E * nbVerinsParPoteau;
+    const cales = E * nbCalesParPoteau;
+    const poids_total = Math.round((E * 13.5) + (moises * 7) + (verins * 2) + (cales * 0.5)); // estimation ajustée
 
     commandeTexte = `Commande étayage
 
@@ -344,105 +386,101 @@ Scène : ${largeur_m} m × ${profondeur_m} m
 
 Moises : ${moises}
 Poteaux : ${E}
-Vérins : ${E}
-Cales bois : ${E}
+Vérins : ${verins}
+Cales bois : ${cales}
 Doubles colliers : ${doubles_colliers}
 Poids estimé : ${poids_total} kg`;
 
-    const resultsHtml = `
+    const resultsDiv = document.getElementById("results");
+    resultsDiv.innerHTML = `
       <div class="materialBlock">
-        <div class="materialTitle" style="font-size:20px; font-weight:700; margin-bottom:8px;">Matériel à commander</div>
-        <div style="font-size:13px; margin-bottom:10px;">Pour une scène de ${largeur_m} m × ${profondeur_m} m</div>
+        <div class="materialTitle">Matériel à commander</div>
+        <div class="sceneInfo">Pour une scène de ${largeur_m} m × ${profondeur_m} m</div>
         <p>Moises : ${moises}</p>
         <p>Poteaux : ${E}</p>
-        <p>Vérins : ${E}</p>
-        <p>Cales bois : ${E}</p>
+        <p>Vérins : ${verins}</p>
+        <p>Cales bois : ${cales}</p>
         <p>Doubles colliers : ${doubles_colliers}</p>
-        <p style="font-size:13px; opacity:0.7;">Poids estimé : ${poids_total} kg</p>
+        <p style="font-size:13px;color:#666">Poids estimé : ${poids_total} kg</p>
       </div>
-      <div class="btn-group">
-        <button id="exportImgBtn" class="btn-export">📸 Exporter (PNG)</button>
-        <button id="copyBtn" class="btn-copy">📋 Copier</button>
-        <button id="shareBtn" class="btn-share">📤 Envoyer</button>
-      </div>
+      <button class="main export" onclick="exportCommande()">📸 Exporter (PNG)</button>
+      <button class="main copy" onclick="copierCommande()">📋 Copier</button>
+      <button class="main share" onclick="partagerCommande()">📤 Envoyer</button>
     `;
 
-    const resultsDiv = document.getElementById('results');
-    resultsDiv.innerHTML = resultsHtml;
     drawPlan(L_mailles, P_mailles);
-
-    // Attacher les événements des nouveaux boutons
-    document.getElementById('exportImgBtn').onclick = exportPNG;
-    document.getElementById('copyBtn').onclick = copierCommande;
-    document.getElementById('shareBtn').onclick = partagerCommande;
-
-    saveToStorage();
+    sauvegarderDimensions();
   }
 
-  function exportPNG() {
-    const element = document.getElementById('exportArea');
-    html2canvas(element, { scale: 2, backgroundColor: null }).then(canvas => {
-      const link = document.createElement('a');
-      link.download = 'commande_etayage.png';
-      link.href = canvas.toDataURL();
-      link.click();
-    }).catch(err => alert('Erreur capture : ' + err));
+  function sauvegarderDimensions() {
+    localStorage.setItem("etayage_largeur", largeurInput.value);
+    localStorage.setItem("etayage_profondeur", profondeurInput.value);
+    localStorage.setItem("etayage_largeur_unit", largeurUnit.value);
+    localStorage.setItem("etayage_profondeur_unit", profondeurUnit.value);
+    localStorage.setItem("etayage_verins", nbVerinsParPoteau);
+    localStorage.setItem("etayage_cales", nbCalesParPoteau);
   }
 
-  function copierCommande() {
-    navigator.clipboard.writeText(commandeTexte);
-    alert('Commande copiée');
-  }
-
-  function partagerCommande() {
-    if (navigator.share) {
-      navigator.share({ title: 'Commande étayage', text: commandeTexte }).catch(() => alert('Partage annulé'));
+  function chargerDimensions() {
+    if (localStorage.getItem("etayage_largeur")) largeurInput.value = localStorage.getItem("etayage_largeur");
+    if (localStorage.getItem("etayage_profondeur")) profondeurInput.value = localStorage.getItem("etayage_profondeur");
+    if (localStorage.getItem("etayage_largeur_unit")) largeurUnit.value = localStorage.getItem("etayage_largeur_unit");
+    if (localStorage.getItem("etayage_profondeur_unit")) profondeurUnit.value = localStorage.getItem("etayage_profondeur_unit");
+    if (localStorage.getItem("etayage_verins")) nbVerinsParPoteau = parseInt(localStorage.getItem("etayage_verins"));
+    if (localStorage.getItem("etayage_cales")) nbCalesParPoteau = parseInt(localStorage.getItem("etayage_cales"));
+    nbVerinsInput.value = nbVerinsParPoteau;
+    nbCalesInput.value = nbCalesParPoteau;
+    if (nbVerinsParPoteau !== 1 || nbCalesParPoteau !== 1) {
+      compoStatic.innerText = `Poteau + ${nbVerinsParPoteau} vérin${nbVerinsParPoteau>1?'s':''} + ${nbCalesParPoteau} cale${nbCalesParPoteau>1?'s':''}`;
     } else {
-      alert('Partage non disponible');
+      compoStatic.innerText = "Poteau + Vérin + Cales";
     }
   }
 
   function resetAll() {
-    if (!confirm('⚠️ Tout effacer ? Les dimensions, le plan et les résultats seront effacés.')) return;
-    localStorage.removeItem('etayage_largeur');
-    localStorage.removeItem('etayage_profondeur');
-    localStorage.removeItem('etayage_unite');
-    largeurInput.value = '';
-    profondeurInput.value = '';
-    currentUnit = 'maille';
-    updateUnitButtons();
-    document.getElementById('results').innerHTML = '';
-    document.getElementById('plan').innerHTML = '';
-    document.getElementById('plan').setAttribute('viewBox', '0 0 100 100');
-    commandeTexte = '';
-    alert('Reset effectué');
+    if (!confirm("Effacer toutes les données ?")) return;
+    largeurInput.value = "";
+    profondeurInput.value = "";
+    largeurUnit.value = "maille";
+    profondeurUnit.value = "maille";
+    nbVerinsParPoteau = 1;
+    nbCalesParPoteau = 1;
+    nbVerinsInput.value = 1;
+    nbCalesInput.value = 1;
+    compoStatic.innerText = "Poteau + Vérin + Cales";
+    compoControls.style.display = "none";
+    localStorage.clear();
+    document.getElementById("results").innerHTML = "";
+    document.getElementById("plan").innerHTML = "";
+    calculer();
   }
 
-  function resetComposition() {
-    // Simple action : réafficher l'info (évite la disparition accidentelle)
-    const compoDiv = document.getElementById('compoInfo');
-    compoDiv.style.backgroundColor = 'rgba(123,92,255,0.15)';
-    setTimeout(() => { compoDiv.style.backgroundColor = ''; }, 300);
-    // Optionnel : alerte discrète
-    // alert('Composition standard d’un étaie : Poteau + Vérin + Cales');
+  function exportCommande() {
+    const element = document.getElementById("exportArea");
+    html2canvas(element, { scale: 2, backgroundColor: null }).then(canvas => {
+      const link = document.createElement("a");
+      link.download = "commande_etayage.png";
+      link.href = canvas.toDataURL();
+      link.click();
+    }).catch(err => alert("Erreur capture"));
   }
 
-  // Unit switch handling
-  unitBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      currentUnit = btn.getAttribute('data-unit');
-      updateUnitButtons();
-      saveToStorage();
-    });
-  });
+  function copierCommande() {
+    navigator.clipboard.writeText(commandeTexte);
+    alert("Commande copiée");
+  }
 
-  document.getElementById('calculerBtn').addEventListener('click', calculer);
-  document.getElementById('resetBtn').addEventListener('click', resetAll);
-  document.getElementById('resetCompoBtn').addEventListener('click', resetComposition);
+  function partagerCommande() {
+    if (navigator.share) {
+      navigator.share({ title: "Commande étayage", text: commandeTexte }).catch(() => alert("Partage annulé"));
+    } else {
+      alert("Partage non disponible");
+    }
+  }
 
-  // Initial load
-  loadFromStorage();
-  if (largeurInput.value && profondeurInput.value) calculer();
+  // Initialisation
+  chargerDimensions();
+  calculer();
 </script>
 </body>
 </html>
