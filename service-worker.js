@@ -1,4 +1,4 @@
-const CACHE_NAME = "stage-tools-v1";
+const CACHE_NAME = "1ere mao 09/05/26";
 const urlsToCache = [
   "./",
   "./index.html",
