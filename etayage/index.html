@@ -26,7 +26,7 @@
     background: linear-gradient(180deg, #6a5acd, #c056d5);
     min-height: 100vh;
     transition: background 0.3s, color 0.3s;
-    touch-action: pan-y; /* Empêche le zoom horizontal */
+    touch-action: pan-y;
   }
 
   body.dark {
@@ -65,62 +65,65 @@
   }
   .back-to-hub:active { transform: scale(0.96); }
 
-  .card, .results-card {
+  .card {
     background: white;
     border-radius: 14px;
     margin-bottom: 14px;
+    padding: 16px;
     box-shadow: 0 6px 14px rgba(0,0,0,0.15);
   }
 
-  /* Mise en valeur du bloc résultats */
+  /* Bloc résultats : mise en valeur 3D */
   .results-card {
-    background: #fff9ef;  /* très léger crème */
-    border: 2px solid #7b5cff;
-    box-shadow: 0 12px 28px rgba(0,0,0,0.25);
+    background: #fff9f0;
+    border-radius: 14px;
+    margin-bottom: 14px;
+    border: 3px solid #7b5cff;
+    box-shadow: 0 20px 30px -10px rgba(0,0,0,0.3);
     position: relative;
+    transition: box-shadow 0.2s;
   }
   .results-card::before {
     content: "📐 RÉSULTAT";
     position: absolute;
-    top: -12px;
+    top: -14px;
     left: 16px;
     background: #7b5cff;
     color: white;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: bold;
-    padding: 4px 12px;
-    border-radius: 20px;
-    letter-spacing: 0.5px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    padding: 5px 16px;
+    border-radius: 30px;
+    letter-spacing: 1px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+    z-index: 2;
   }
   body.dark .results-card {
-    background: #2a2a2a;
+    background: #1e1e1e;
+    border-color: #9b7cff;
   }
 
-  .headerRow {
+  /* Ligne de saisie : label + contrôles sur une ligne */
+  .input-line {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-top: 6px;
+    justify-content: space-between;
+    margin-top: 12px;
     flex-wrap: wrap;
     gap: 8px;
   }
-  .headerRow h3 { margin: 0; font-size: 16px; }
-  .headerRow select {
-    width: 110px;
-    height: 36px;
-    border-radius: 8px;
-    border: 2px solid #7b5cff;
-    background: #f5f3ff;
+  .input-line .label {
+    font-weight: 600;
+    font-size: 15px;
+    min-width: 85px;
   }
-
-  .measureRow {
+  .controls {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-top: 8px;
+    gap: 8px;
+    flex: 2;
   }
-  .measureRow button {
+  .controls button {
     width: 38px;
     height: 38px;
     font-size: 20px;
@@ -131,8 +134,8 @@
     touch-action: manipulation;
     cursor: pointer;
   }
-  .measureRow button:active { transform: scale(0.95); }
-  .measureRow input {
+  .controls button:active { transform: scale(0.95); }
+  .controls input {
     width: 80px;
     padding: 8px;
     font-size: 18px;
@@ -143,13 +146,25 @@
     font-weight: 600;
     touch-action: manipulation;
   }
+  .unit-select {
+    width: 110px;
+  }
+  .unit-select select {
+    width: 100%;
+    height: 38px;
+    border-radius: 8px;
+    border: 2px solid #7b5cff;
+    background: #f5f3ff;
+    font-size: 14px;
+  }
 
   .info-unite {
     font-size: 11px;
     color: #555;
-    margin-top: 4px;
+    margin: 2px 0 4px 0;
     opacity: 0.7;
     min-height: 18px;
+    padding-left: 8px;
   }
   body.dark .info-unite { color: #ccc; }
 
@@ -236,7 +251,6 @@
     touch-action: manipulation;
   }
 
-  /* Conteneur SVG avec calcul dynamique de taille */
   .plan-container {
     width: 100%;
     overflow-x: auto;
@@ -258,31 +272,37 @@
   <button class="theme-toggle" onclick="toggleTheme()">🌙 Mode sombre</button>
 
   <div class="card">
-    <div class="headerRow">
-      <h3>LARGEUR</h3>
-      <select id="largeur_unit">
-        <option value="metre">mètres</option>
-        <option value="maille">mailles</option>
-      </select>
-    </div>
-    <div class="measureRow">
-      <button class="dec" data-target="largeur" data-unit="largeur_unit">−</button>
-      <input id="largeur" type="number" step="1" value="0">
-      <button class="inc" data-target="largeur" data-unit="largeur_unit">+</button>
+    <!-- Largeur -->
+    <div class="input-line">
+      <span class="label">LARGEUR</span>
+      <div class="controls">
+        <button class="dec" data-target="largeur">−</button>
+        <input id="largeur" type="number" step="1" value="">
+        <button class="inc" data-target="largeur">+</button>
+      </div>
+      <div class="unit-select">
+        <select id="largeur_unit">
+          <option value="metre">mètres</option>
+          <option value="maille">mailles</option>
+        </select>
+      </div>
     </div>
     <div id="largeur_info" class="info-unite"></div>
 
-    <div class="headerRow">
-      <h3>PROFONDEUR</h3>
-      <select id="profondeur_unit">
-        <option value="metre">mètres</option>
-        <option value="maille">mailles</option>
-      </select>
-    </div>
-    <div class="measureRow">
-      <button class="dec" data-target="profondeur" data-unit="profondeur_unit">−</button>
-      <input id="profondeur" type="number" step="1" value="0">
-      <button class="inc" data-target="profondeur" data-unit="profondeur_unit">+</button>
+    <!-- Profondeur -->
+    <div class="input-line">
+      <span class="label">PROFONDEUR</span>
+      <div class="controls">
+        <button class="dec" data-target="profondeur">−</button>
+        <input id="profondeur" type="number" step="1" value="">
+        <button class="inc" data-target="profondeur">+</button>
+      </div>
+      <div class="unit-select">
+        <select id="profondeur_unit">
+          <option value="metre">mètres</option>
+          <option value="maille">mailles</option>
+        </select>
+      </div>
     </div>
     <div id="profondeur_info" class="info-unite"></div>
 
@@ -291,7 +311,7 @@
   </div>
 
   <div class="results-card" id="exportArea">
-    <div style="padding: 12px; padding-top: 20px;">
+    <div style="padding: 12px; padding-top: 22px;">
       <h3 style="margin:0 0 6px;">Plan d'étayage</h3>
       <div class="plan-container">
         <svg id="plan"></svg>
@@ -324,7 +344,7 @@
 </div>
 
 <script>
-  // Éléments DOM
+  // --- Éléments DOM ---
   const largeurInput = document.getElementById('largeur');
   const profondeurInput = document.getElementById('profondeur');
   const largeurUnit = document.getElementById('largeur_unit');
@@ -340,12 +360,11 @@
   const resetCompoBtn = document.getElementById('resetCompoBtn');
   const compoStatic = document.getElementById('compoStatic');
 
-  // Valeurs par défaut
   let nbVerinsParPoteau = 1;
   let nbCalesParPoteau = 1;
   let commandeTexte = "";
 
-  // Gestion du texte info unité (apparaît seulement si on sélectionne "mailles")
+  // --- Gestion des messages d'info unité (discret le texte "1 maille = 2m x 2m") ---
   function updateUnitInfos() {
     const unitL = largeurUnit.value;
     const unitP = profondeurUnit.value;
@@ -355,22 +374,26 @@
   largeurUnit.addEventListener('change', updateUnitInfos);
   profondeurUnit.addEventListener('change', updateUnitInfos);
 
-  // Conversion
+  // --- Conversion en mailles ---
   function toMaille(valeur, unit) {
-    if (unit === 'maille') return parseFloat(valeur);
-    else return parseFloat(valeur) / 2;
+    if (valeur === "" || isNaN(valeur)) return 0;
+    const v = parseFloat(valeur);
+    if (unit === 'maille') return v;
+    else return v / 2;
   }
 
-  // Dessin du plan avec taille dynamique pour éviter le scroll
+  // --- Dessin du plan avec taille dynamique (plus jamais de scroll) ---
   function drawPlan(L, P) {
     const svg = document.getElementById('plan');
-    // Taille max souhaitée pour le côté le plus grand (en pixels)
-    const maxSize = 350;
-    const maxMaille = Math.max(L, P);
-    let cellSize = 35;
-    if (maxMaille > 0) {
-      cellSize = Math.min(35, maxSize / maxMaille);
+    // Limite de pixels pour le côté le plus long (largeur ou hauteur)
+    const maxPixels = 300;
+    const maxMailles = Math.max(L, P);
+    let cellSize = 35; // taille par défaut
+    if (maxMailles > 0) {
+      cellSize = maxPixels / maxMailles;
     }
+    // On plafonne la taille de cellule (pour ne pas que le plan explose si très peu de mailles)
+    if (cellSize > 35) cellSize = 35;
     const width = L * cellSize;
     const height = P * cellSize;
     svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
@@ -402,21 +425,21 @@
     svg.innerHTML = content;
   }
 
-  // Calcul et affichage
+  // --- Calcul principal (matériel) ---
   function calculerEtAfficher() {
-    let largeur = parseFloat(largeurInput.value);
-    let profondeur = parseFloat(profondeurInput.value);
-    if (isNaN(largeur)) largeur = 0;
-    if (isNaN(profondeur)) profondeur = 0;
+    const largeurRaw = largeurInput.value;
+    const profondeurRaw = profondeurInput.value;
+    let largeurVal = (largeurRaw === "") ? 0 : parseFloat(largeurRaw);
+    let profondeurVal = (profondeurRaw === "") ? 0 : parseFloat(profondeurRaw);
+    if (isNaN(largeurVal)) largeurVal = 0;
+    if (isNaN(profondeurVal)) profondeurVal = 0;
 
     const unitL = largeurUnit.value;
     const unitP = profondeurUnit.value;
-    let L_mailles = Math.round(toMaille(largeur, unitL));
-    let P_mailles = Math.round(toMaille(profondeur, unitP));
-    if (L_mailles < 0) L_mailles = 0;
-    if (P_mailles < 0) P_mailles = 0;
-    const L = L_mailles;
-    const P = P_mailles;
+    let L = Math.round(toMaille(largeurVal, unitL));
+    let P = Math.round(toMaille(profondeurVal, unitP));
+    if (L < 0) L = 0;
+    if (P < 0) P = 0;
 
     const largeur_m = L * 2;
     const profondeur_m = P * 2;
@@ -463,7 +486,7 @@ Poids estimé : ${poids_total} kg`;
     sauvegarder();
   }
 
-  // Sauvegarde
+  // --- Sauvegarde localStorage (sauf champs vides on ne sauvegarde pas la valeur vide ? On les sauvegarde comme chaîne vide) ---
   function sauvegarder() {
     localStorage.setItem('etayage_largeur', largeurInput.value);
     localStorage.setItem('etayage_profondeur', profondeurInput.value);
@@ -475,8 +498,10 @@ Poids estimé : ${poids_total} kg`;
   }
 
   function charger() {
-    if (localStorage.getItem('etayage_largeur')) largeurInput.value = localStorage.getItem('etayage_largeur');
-    if (localStorage.getItem('etayage_profondeur')) profondeurInput.value = localStorage.getItem('etayage_profondeur');
+    const savedLargeur = localStorage.getItem('etayage_largeur');
+    const savedProfondeur = localStorage.getItem('etayage_profondeur');
+    if (savedLargeur !== null) largeurInput.value = savedLargeur;
+    if (savedProfondeur !== null) profondeurInput.value = savedProfondeur;
     if (localStorage.getItem('etayage_largeur_unit')) largeurUnit.value = localStorage.getItem('etayage_largeur_unit');
     if (localStorage.getItem('etayage_profondeur_unit')) profondeurUnit.value = localStorage.getItem('etayage_profondeur_unit');
     if (localStorage.getItem('etayage_verins')) nbVerinsParPoteau = parseInt(localStorage.getItem('etayage_verins'));
@@ -489,14 +514,14 @@ Poids estimé : ${poids_total} kg`;
     updateUnitInfos();
     updateCompoStatic();
 
-    // Si aucune valeur sauvegardée, on force zéro et mètres
-    if (!localStorage.getItem('etayage_largeur')) {
-      largeurInput.value = 0;
-      profondeurInput.value = 0;
-      largeurUnit.value = 'metre';
-      profondeurUnit.value = 'metre';
+    // Si aucune valeur sauvegardée, on affiche les champs vides (reset par défaut)
+    if (savedLargeur === null && savedProfondeur === null) {
+      largeurInput.value = "";
+      profondeurInput.value = "";
+      largeurUnit.value = "metre";
+      profondeurUnit.value = "metre";
     }
-    // Affichage initial vide
+    // Affichage initial : message d'invite
     document.getElementById('results').innerHTML = '<p style="text-align:center; padding:12px;">Cliquez sur "Valider" pour voir le plan et la commande.</p>';
     document.getElementById('plan').innerHTML = '';
   }
@@ -509,13 +534,13 @@ Poids estimé : ${poids_total} kg`;
     }
   }
 
-  // Reset général : remet tout à zéro et unités sur mètres
+  // --- Reset général : champs vidés, unités repassent à mètres, efface l'affichage ---
   function resetGeneral() {
-    if (confirm('⚠️ Reset général : les dimensions de la scène seront remises à zéro (mètres). La composition de l’étaie n’est pas modifiée.')) {
-      largeurInput.value = 0;
-      profondeurInput.value = 0;
-      largeurUnit.value = 'metre';
-      profondeurUnit.value = 'metre';
+    if (confirm("⚠️ Cela effacera toutes les valeurs saisies. Voulez-vous continuer ?")) {
+      largeurInput.value = "";
+      profondeurInput.value = "";
+      largeurUnit.value = "metre";
+      profondeurUnit.value = "metre";
       updateUnitInfos();
       document.getElementById('results').innerHTML = '<p style="text-align:center; padding:12px;">Cliquez sur "Valider" pour voir le plan et la commande.</p>';
       document.getElementById('plan').innerHTML = '';
@@ -523,7 +548,7 @@ Poids estimé : ${poids_total} kg`;
     }
   }
 
-  // Gestion des incréments/décréments (pas de 1)
+  // --- Boutons + / - (pas = 1 dans l'unité courante, mais on manipule la valeur numérique) ---
   document.querySelectorAll('.inc, .dec').forEach(btn => {
     btn.addEventListener('click', (e) => {
       const targetId = btn.dataset.target;
@@ -537,7 +562,7 @@ Poids estimé : ${poids_total} kg`;
     });
   });
 
-  // Panneau de composition
+  // --- Panneau de composition modifiable ---
   editBtn.addEventListener('click', () => {
     const isVisible = compoControls.style.display === 'block';
     compoControls.style.display = isVisible ? 'none' : 'block';
@@ -570,11 +595,11 @@ Poids estimé : ${poids_total} kg`;
     sauvegarder();
   });
 
-  // Boutons
+  // --- Actions des boutons principaux ---
   validerBtn.addEventListener('click', calculerEtAfficher);
   resetBtn.addEventListener('click', resetGeneral);
 
-  // Exports
+  // --- Fonctions d'export (PNG, copie, partage) ---
   window.exportCommande = function() {
     const element = document.getElementById('exportArea');
     html2canvas(element, { scale: 2, backgroundColor: null }).then(canvas => {
@@ -600,7 +625,7 @@ Poids estimé : ${poids_total} kg`;
     sauvegarder();
   };
 
-  // Lancement
+  // --- Initialisation ---
   charger();
 </script>
 </body>
