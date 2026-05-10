@@ -1,13 +1,14 @@
 <!DOCTYPE html>
+
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, maximum-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Etayage">
 <meta name="theme-color" content="#6a5acd">
-<title>Calculateur d’étayage de scène</title>
+<title>Calculateur d'étayage de scène</title>
 <link rel="apple-touch-icon" href="icone.jpg">
 <link rel="manifest" href="manifest.json">
 
@@ -27,13 +28,14 @@
     min-height: 100vh;
     transition: background 0.3s, color 0.3s;
     touch-action: pan-y;
+    -ms-touch-action: pan-y;
   }
 
   body.dark {
     background: #121212;
     color: #eee;
   }
-  body.dark .card, body.dark .results-card { background: #1e1e1e; }
+  body.dark .card { background: #1e1e1e; }
   body.dark .materialBlock { background: #2b2b2b; }
   body.dark .compo-panel { background: #2a2a2a; }
   body.dark .sceneInfo { color: #aaa; }
@@ -54,164 +56,256 @@
     color: white;
     border: none;
     border-radius: 50px;
-    padding: 10px 18px;
-    font-size: 14px;
+    padding: 12px 20px;
+    font-size: 15px;
     font-weight: 500;
     text-decoration: none;
     z-index: 1000;
     box-shadow: 0 2px 8px rgba(0,0,0,0.3);
     transition: transform 0.1s;
     touch-action: manipulation;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
   }
   .back-to-hub:active { transform: scale(0.96); }
 
+  /* ───── Carte de saisie ───── */
   .card {
     background: white;
-    border-radius: 14px;
-    margin-bottom: 14px;
-    padding: 16px;
+    border-radius: 16px;
+    margin-bottom: 24px;
+    padding: 20px 16px 16px;
     box-shadow: 0 6px 14px rgba(0,0,0,0.15);
   }
+  body.dark .card { background: #1e1e1e; }
 
-  /* Bloc résultats : mise en valeur 3D */
-  .results-card {
-    background: #fff9f0;
-    border-radius: 14px;
-    margin-bottom: 14px;
-    border: 3px solid #7b5cff;
-    box-shadow: 0 20px 30px -10px rgba(0,0,0,0.3);
-    position: relative;
-    transition: box-shadow 0.2s;
-  }
-  .results-card::before {
-    content: "📐 RÉSULTAT";
-    position: absolute;
-    top: -14px;
-    left: 16px;
-    background: #7b5cff;
-    color: white;
-    font-size: 13px;
-    font-weight: bold;
-    padding: 5px 16px;
-    border-radius: 30px;
-    letter-spacing: 1px;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.2);
-    z-index: 2;
-  }
-  body.dark .results-card {
-    background: #1e1e1e;
-    border-color: #9b7cff;
+  /* ───── Bloc dimension : 2 lignes ───── */
+  .dim-block {
+    margin-top: 16px;
   }
 
-  /* Ligne de saisie : label + contrôles sur une ligne */
-  .input-line {
+  /* Séparateur entre Largeur et Profondeur */
+  .info-unite + .dim-block {
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1.5px solid rgba(123, 92, 255, 0.18);
+  }
+
+  /* Ligne 1 : label à gauche, sélecteur à droite */
+  .dim-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: 12px;
-    flex-wrap: wrap;
-    gap: 8px;
+    margin-bottom: 10px;
   }
-  .input-line .label {
+
+  .label {
+    font-weight: 800;
+    font-size: 12px;
+    letter-spacing: 1.2px;
+    color: #4a3a8a;
+    text-transform: uppercase;
+  }
+  body.dark .label { color: #a899e0; }
+
+  .unit-select select {
+    height: 36px;
+    border-radius: 10px;
+    border: 2px solid #7b5cff;
+    background-color: #f0ecff;
+    font-size: 16px;
     font-weight: 600;
-    font-size: 15px;
-    min-width: 85px;
+    color: #4a3a8a;
+    padding: 0 28px 0 10px;
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237b5cff' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    touch-action: manipulation;
+    cursor: pointer;
   }
+  body.dark .unit-select select {
+    background-color: #2a2a3a;
+    color: #ccc;
+    border-color: #9b7cff;
+  }
+
+  /* Ligne 2 : − valeur + sur toute la largeur */
   .controls {
     display: flex;
     align-items: center;
-    gap: 8px;
-    flex: 2;
+    gap: 10px;
+    width: 100%;
   }
   .controls button {
-    width: 38px;
-    height: 38px;
-    font-size: 20px;
+    width: 52px;
+    height: 52px;
+    font-size: 24px;
     background: #7b5cff;
     border: none;
-    border-radius: 8px;
+    border-radius: 12px;
     color: white;
     touch-action: manipulation;
     cursor: pointer;
+    flex-shrink: 0;
   }
-  .controls button:active { transform: scale(0.95); }
+  .controls button:active { transform: scale(0.92); }
+
   .controls input {
-    width: 80px;
-    padding: 8px;
-    font-size: 18px;
+    flex: 1;
+    min-width: 0;
+    height: 52px;
+    padding: 0 8px;
+    font-size: 26px;
+    font-weight: 800;
     text-align: center;
-    border-radius: 10px;
-    border: 3px solid #7b5cff;
+    border-radius: 12px;
+    border: 2.5px solid #7b5cff;
     background: #f5f3ff;
-    font-weight: 600;
+    color: #1e0a4a;
     touch-action: manipulation;
   }
-  .unit-select {
-    width: 110px;
+  body.dark .controls input {
+    background: #2a2040;
+    color: #e0d8ff;
+    border-color: #9b7cff;
   }
-  .unit-select select {
-    width: 100%;
-    height: 38px;
-    border-radius: 8px;
-    border: 2px solid #7b5cff;
-    background: #f5f3ff;
-    font-size: 14px;
+
+  /* ───── Hint "1 maille = 2m × 2m" avec animation shimmer ───── */
+  @keyframes mailleShimmer {
+    0%   { opacity: 0; transform: translateY(-5px); filter: brightness(2.5) blur(2px); letter-spacing: 2px; }
+    35%  { opacity: 1; filter: brightness(1.8); color: #9b3de8; letter-spacing: 0.8px; }
+    65%  { filter: brightness(1.3); color: #7b5cff; }
+    100% { opacity: 0.85; transform: translateY(0); filter: brightness(1); letter-spacing: 0.2px; }
   }
 
   .info-unite {
-    font-size: 11px;
-    color: #555;
-    margin: 2px 0 4px 0;
-    opacity: 0.7;
+    font-size: 11.5px;
+    color: #7b5cff;
+    margin: 7px 0 0 4px;
     min-height: 18px;
-    padding-left: 8px;
+    font-style: italic;
+    font-weight: 500;
   }
-  body.dark .info-unite { color: #ccc; }
+  body.dark .info-unite { color: #b899ff; }
 
+  .info-unite.animate-in {
+    animation: mailleShimmer 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  /* ───── Boutons ───── */
   button.main {
     width: 100%;
-    padding: 11px;
+    padding: 14px;
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
     font-size: 16px;
-    margin-top: 8px;
+    font-weight: 700;
+    margin-top: 12px;
     color: white;
     touch-action: manipulation;
     cursor: pointer;
+    min-height: 50px;
+    letter-spacing: 0.3px;
   }
   button.main:active { transform: scale(0.97); }
-  .calc { background: #7b5cff; }
-  .reset { background: #d84343; }
+  .calc   { background: #7b5cff; }
+  .reset  { background: #d84343; }
   .export { background: #2e9e53; }
-  .copy { background: #5b57ff; }
-  .share { background: #ff9800; }
+  .copy   { background: #5b57ff; }
+  .share  { background: #ff9800; }
 
   .theme-toggle {
     display: block;
-    margin: 0 auto 12px auto;
+    margin: 0 auto 14px auto;
     background: white;
     border: none;
     border-radius: 40px;
-    padding: 8px 20px;
+    padding: 10px 22px;
     font-size: 14px;
     font-weight: bold;
     cursor: pointer;
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     touch-action: manipulation;
+    min-height: 44px;
   }
-  body.dark .theme-toggle {
-    background: #333;
-    color: white;
+  body.dark .theme-toggle { background: #333; color: white; }
+
+  /* ═══════════════════════════════════════════
+     CARTE RÉSULTATS — EFFET 3D TRÈS PRONONCÉ
+  ═══════════════════════════════════════════ */
+  .results-card {
+    background: linear-gradient(148deg, #ede4ff 0%, #e4eeff 45%, #ffeef5 100%);
+    border-radius: 20px;
+    margin-bottom: 14px;
+    margin-top: 10px;
+    border: 2.5px solid #7b5cff;
+    position: relative;
+
+    /* Tranches empilées visibles = effet volume/extrusion */
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.55) inset,  /* reflet intérieur */
+      0  4px 0 0 #5538cc,                       /* tranche 1 */
+      0  7px 0 0 #3d27a0,                       /* tranche 2 */
+      0 10px 0 0 rgba(45,20,130,0.65),          /* tranche 3 */
+      0 13px 0 0 rgba(20,8,70,0.35),            /* tranche fondue */
+      0 18px 32px rgba(0,0,0,0.38),             /* ombre portée */
+      0 36px 60px rgba(90,40,200,0.22),         /* halo violet */
+      0  0  30px rgba(123,92,255,0.16);         /* halo latéral */
+
+    transform: translateY(-3px);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
   }
 
-  .materialBlock {
-    background: #f1edff;
-    border-radius: 10px;
-    padding: 12px;
-    margin-top: 10px;
+  .results-card::before {
+    content: "📐 RÉSULTAT";
+    position: absolute;
+    top: -16px;
+    left: 18px;
+    background: linear-gradient(135deg, #7b5cff 0%, #b040e8 100%);
+    color: white;
+    font-size: 11px;
+    font-weight: 900;
+    padding: 5px 18px;
+    border-radius: 30px;
+    letter-spacing: 2px;
+    box-shadow:
+      0 4px 12px rgba(123,92,255,0.6),
+      0 1px 0 rgba(255,255,255,0.25) inset;
+    z-index: 2;
   }
+
+  /* Mode sombre : version sombre de la carte résultats */
+  body.dark .results-card {
+    background: linear-gradient(148deg, #1a1035 0%, #0e1a38 50%, #200e30 100%);
+    border-color: #9b7cff;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.06) inset,
+      0  4px 0 0 #2a1880,
+      0  7px 0 0 #1c1060,
+      0 10px 0 0 rgba(12,4,45,0.85),
+      0 13px 0 0 rgba(0,0,20,0.5),
+      0 20px 40px rgba(0,0,0,0.65),
+      0 40px 70px rgba(50,15,140,0.35),
+      0  0  36px rgba(123,92,255,0.14);
+  }
+  body.dark .results-card::before {
+    background: linear-gradient(135deg, #6040e0, #9030cc);
+  }
+
+  /* ───── Contenu résultats ───── */
+  .materialBlock {
+    background: rgba(241, 237, 255, 0.85);
+    border-radius: 12px;
+    padding: 14px;
+    margin-top: 12px;
+  }
+  body.dark .materialBlock { background: #2b2b3a; }
+
   .materialTitle {
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 700;
     color: #7b5cff;
     margin-bottom: 6px;
@@ -219,11 +313,13 @@
   .sceneInfo { font-size: 14px; color: #555; margin-bottom: 10px; }
 
   .compo-panel {
-    background: #f9f3e0;
-    padding: 10px;
+    background: rgba(249,243,224,0.9);
+    padding: 12px;
     border-radius: 12px;
     margin: 10px 0;
   }
+  body.dark .compo-panel { background: #2a2a2a; }
+
   .compo-row {
     display: flex;
     gap: 10px;
@@ -238,17 +334,19 @@
     border-radius: 8px;
     border: 1px solid #aaa;
     text-align: center;
+    font-size: 16px;
   }
   .edit-btn {
     background: #7b5cff;
     border: none;
     color: white;
-    padding: 6px 12px;
+    padding: 8px 14px;
     border-radius: 20px;
-    font-size: 12px;
+    font-size: 13px;
     margin-left: 8px;
     cursor: pointer;
     touch-action: manipulation;
+    min-height: 36px;
   }
 
   .plan-container {
@@ -258,7 +356,7 @@
     margin-top: 10px;
   }
   #plan {
-    background: #fafafa;
+    background: rgba(250,250,250,0.7);
     border-radius: 8px;
     display: block;
     margin: 0 auto;
@@ -266,48 +364,57 @@
     height: auto;
   }
 </style>
+
 </head>
 <body>
 <div class="container">
   <button class="theme-toggle" onclick="toggleTheme()">🌙 Mode sombre</button>
 
   <div class="card">
-    <!-- Largeur -->
-    <div class="input-line">
-      <span class="label">LARGEUR</span>
-      <div class="controls">
-        <button class="dec" data-target="largeur">−</button>
-        <input id="largeur" type="number" step="1" value="">
-        <button class="inc" data-target="largeur">+</button>
-      </div>
-      <div class="unit-select">
-        <select id="largeur_unit">
-          <option value="metre">mètres</option>
-          <option value="maille">mailles</option>
-        </select>
-      </div>
-    </div>
-    <div id="largeur_info" class="info-unite"></div>
 
-    <!-- Profondeur -->
-    <div class="input-line">
-      <span class="label">PROFONDEUR</span>
-      <div class="controls">
-        <button class="dec" data-target="profondeur">−</button>
-        <input id="profondeur" type="number" step="1" value="">
-        <button class="inc" data-target="profondeur">+</button>
-      </div>
-      <div class="unit-select">
-        <select id="profondeur_unit">
-          <option value="metre">mètres</option>
-          <option value="maille">mailles</option>
-        </select>
-      </div>
+```
+<!-- ── Largeur ── -->
+<div class="dim-block">
+  <div class="dim-header">
+    <span class="label">Largeur</span>
+    <div class="unit-select">
+      <select id="largeur_unit">
+        <option value="metre">mètres</option>
+        <option value="maille">mailles</option>
+      </select>
     </div>
-    <div id="profondeur_info" class="info-unite"></div>
+  </div>
+  <div class="controls">
+    <button class="dec" data-target="largeur">−</button>
+    <input id="largeur" type="number" step="1" value="" inputmode="decimal">
+    <button class="inc" data-target="largeur">+</button>
+  </div>
+</div>
+<div id="largeur_info" class="info-unite"></div>
 
-    <button class="main calc" id="validerBtn">Valider</button>
-    <button class="main reset" id="resetBtn">Reset général</button>
+<!-- ── Profondeur ── -->
+<div class="dim-block">
+  <div class="dim-header">
+    <span class="label">Profondeur</span>
+    <div class="unit-select">
+      <select id="profondeur_unit">
+        <option value="metre">mètres</option>
+        <option value="maille">mailles</option>
+      </select>
+    </div>
+  </div>
+  <div class="controls">
+    <button class="dec" data-target="profondeur">−</button>
+    <input id="profondeur" type="number" step="1" value="" inputmode="decimal">
+    <button class="inc" data-target="profondeur">+</button>
+  </div>
+</div>
+<div id="profondeur_info" class="info-unite"></div>
+
+<button class="main calc" id="validerBtn">Valider</button>
+<button class="main reset" id="resetBtn">Reset général</button>
+```
+
   </div>
 
   <div class="results-card" id="exportArea">
@@ -317,30 +424,34 @@
         <svg id="plan"></svg>
       </div>
 
-      <div class="compo-panel" id="compoPanel">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <span>🧱 Composition d’un étaie</span>
-          <button class="edit-btn" id="editCompoBtn">Modifier</button>
-        </div>
-        <div id="compoControls" style="display: none;">
-          <div class="compo-row">
-            <label>Vérins par poteau :</label>
-            <input type="number" id="nbVerins" min="1" step="1" value="1">
-          </div>
-          <div class="compo-row">
-            <label>Cales bois par poteau :</label>
-            <input type="number" id="nbCales" min="1" step="1" value="1">
-          </div>
-          <button class="edit-btn" id="resetCompoBtn" style="background:#d84343;">↩️ Réinitialiser composition</button>
-        </div>
-        <div id="compoStatic">Poteau + Vérin + Cales</div>
-      </div>
-
-      <div id="results"></div>
+```
+  <div class="compo-panel" id="compoPanel">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <span>🧱 Composition d'un étaie</span>
+      <button class="edit-btn" id="editCompoBtn">Modifier</button>
     </div>
+    <div id="compoControls" style="display: none;">
+      <div class="compo-row">
+        <label>Vérins par poteau :</label>
+        <input type="number" id="nbVerins" min="1" step="1" value="1">
+      </div>
+      <div class="compo-row">
+        <label>Cales bois par poteau :</label>
+        <input type="number" id="nbCales" min="1" step="1" value="1">
+      </div>
+      <button class="edit-btn" id="resetCompoBtn" style="background:#d84343;">↩️ Réinitialiser composition</button>
+    </div>
+    <div id="compoStatic">Poteau + Vérin + Cales</div>
   </div>
 
-  <a href="../index.html" class="back-to-hub">🏠 Hub</a>
+  <div id="results"></div>
+</div>
+```
+
+  </div>
+
+<a href="../index.html" class="back-to-hub">🏠 Hub</a>
+
 </div>
 
 <script>
@@ -364,12 +475,24 @@
   let nbCalesParPoteau = 1;
   let commandeTexte = "";
 
-  // --- Gestion des messages d'info unité (discret le texte "1 maille = 2m x 2m") ---
+  // --- Helper purement cosmétique : anime le hint maille à chaque apparition ---
+  function setInfoUnite(el, text) {
+    el.textContent = text;
+    if (text) {
+      el.classList.remove('animate-in');
+      void el.offsetWidth; // force reflow pour relancer l'animation CSS
+      el.classList.add('animate-in');
+    } else {
+      el.classList.remove('animate-in');
+    }
+  }
+
+  // --- Gestion des messages d'info unité ---
   function updateUnitInfos() {
     const unitL = largeurUnit.value;
     const unitP = profondeurUnit.value;
-    largeurInfo.innerHTML = (unitL === 'maille') ? '1 maille = 2 m × 2 m' : '';
-    profondeurInfo.innerHTML = (unitP === 'maille') ? '1 maille = 2 m × 2 m' : '';
+    setInfoUnite(largeurInfo,    unitL === 'maille' ? '1 maille = 2 m × 2 m' : '');
+    setInfoUnite(profondeurInfo, unitP === 'maille' ? '1 maille = 2 m × 2 m' : '');
   }
   largeurUnit.addEventListener('change', updateUnitInfos);
   profondeurUnit.addEventListener('change', updateUnitInfos);
@@ -486,7 +609,7 @@ Poids estimé : ${poids_total} kg`;
     sauvegarder();
   }
 
-  // --- Sauvegarde localStorage (sauf champs vides on ne sauvegarde pas la valeur vide ? On les sauvegarde comme chaîne vide) ---
+  // --- Sauvegarde localStorage ---
   function sauvegarder() {
     localStorage.setItem('etayage_largeur', largeurInput.value);
     localStorage.setItem('etayage_profondeur', profondeurInput.value);
@@ -514,14 +637,12 @@ Poids estimé : ${poids_total} kg`;
     updateUnitInfos();
     updateCompoStatic();
 
-    // Si aucune valeur sauvegardée, on affiche les champs vides (reset par défaut)
     if (savedLargeur === null && savedProfondeur === null) {
       largeurInput.value = "";
       profondeurInput.value = "";
       largeurUnit.value = "metre";
       profondeurUnit.value = "metre";
     }
-    // Affichage initial : message d'invite
     document.getElementById('results').innerHTML = '<p style="text-align:center; padding:12px;">Cliquez sur "Valider" pour voir le plan et la commande.</p>';
     document.getElementById('plan').innerHTML = '';
   }
@@ -534,7 +655,7 @@ Poids estimé : ${poids_total} kg`;
     }
   }
 
-  // --- Reset général : champs vidés, unités repassent à mètres, efface l'affichage ---
+  // --- Reset général ---
   function resetGeneral() {
     if (confirm("⚠️ Cela effacera toutes les valeurs saisies. Voulez-vous continuer ?")) {
       largeurInput.value = "";
@@ -548,7 +669,7 @@ Poids estimé : ${poids_total} kg`;
     }
   }
 
-  // --- Boutons + / - (pas = 1 dans l'unité courante, mais on manipule la valeur numérique) ---
+  // --- Boutons + / - ---
   document.querySelectorAll('.inc, .dec').forEach(btn => {
     btn.addEventListener('click', (e) => {
       const targetId = btn.dataset.target;
@@ -628,5 +749,6 @@ Poids estimé : ${poids_total} kg`;
   // --- Initialisation ---
   charger();
 </script>
+
 </body>
 </html>
