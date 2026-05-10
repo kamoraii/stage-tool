@@ -721,15 +721,48 @@ Poids estimé : ${poids_total} kg`;
   resetBtn.addEventListener('click', resetGeneral);
 
   // --- Fonctions d'export (PNG, copie, partage) ---
-  window.exportCommande = function() {
-    const element = document.getElementById('exportArea');
-    html2canvas(element, { scale: 2, backgroundColor: null }).then(canvas => {
+window.exportCommande = function() {
+  const exportDiv = document.getElementById('exportArea');
+  const svg = document.getElementById('plan');
+  // Sauvegarde des styles originaux
+  const originalSvgStyle = svg.getAttribute('style');
+  const originalSvgWidth = svg.getAttribute('width');
+  const originalSvgHeight = svg.getAttribute('height');
+  const originalContainerStyle = document.querySelector('.plan-container').getAttribute('style');
+  
+  // Calcul des dimensions réelles du SVG
+  const bbox = svg.getBBox ? svg.getBBox() : { width: 0, height: 0 };
+  const width = bbox.width || svg.clientWidth;
+  const height = bbox.height || svg.clientHeight;
+  if (width && height) {
+    svg.setAttribute('width', width);
+    svg.setAttribute('height', height);
+    svg.style.width = width + 'px';
+    svg.style.height = height + 'px';
+    document.querySelector('.plan-container').style.overflow = 'visible';
+  }
+
+  html2canvas(exportDiv, { scale: 2, backgroundColor: null, useCORS: true })
+    .then(canvas => {
+      // Restaurer les styles
+      svg.removeAttribute('style');
+      if (originalSvgWidth) svg.setAttribute('width', originalSvgWidth);
+      if (originalSvgHeight) svg.setAttribute('height', originalSvgHeight);
+      document.querySelector('.plan-container').setAttribute('style', originalContainerStyle || '');
+      
       const link = document.createElement('a');
       link.download = 'commande_etayage.png';
       link.href = canvas.toDataURL();
       link.click();
-    }).catch(err => alert('Erreur capture'));
-  };
+    })
+    .catch(err => {
+      svg.removeAttribute('style');
+      if (originalSvgWidth) svg.setAttribute('width', originalSvgWidth);
+      if (originalSvgHeight) svg.setAttribute('height', originalSvgHeight);
+      document.querySelector('.plan-container').setAttribute('style', originalContainerStyle || '');
+      alert('Erreur capture : ' + err);
+    });
+};
   window.copierCommande = function() {
     navigator.clipboard.writeText(commandeTexte);
     alert('Commande copiée');
