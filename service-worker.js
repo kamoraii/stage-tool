@@ -1,4 +1,4 @@
-const CACHE_NAME = "1ere mao 09/05/26";
+const CACHE_NAME = "1ere mao 09/05/26 1.1";
 const urlsToCache = [
   "./",
   "./index.html",
