@@ -1,175 +1,625 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Stage Tools">
-<meta name="theme-color" content="#e0d3bb">
-<title>Stage Tools</title>
-<link rel="apple-touch-icon" href="stage-icon.jpg">
-<link rel="icon" type="image/jpeg" href="stage-icon.jpg">
-<link rel="manifest" href="manifest.json">
-
-<style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  :root {
-    --bg: #B8BEFF;
-    --card: #ffffff;
-    --text: #1e293b;
-    --text-light: #5a4a2e;
-    --border: #cbbf9a;
-    --accent: #1e3a5f;
-    --shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-    --card-radius: 24px;
-  }
-
-  body {
-    background: var(--bg);
-    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-    padding: 20px;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .container {
-    max-width: 600px;
-    width: 100%;
-    margin: auto;
-  }
-
-  h1 {
-    font-size: 32px;
-    color: var(--accent);
-    text-align: center;
-    margin-bottom: 8px;
-    font-weight: 700;
-    letter-spacing: -0.3px;
-  }
-
-  .sub {
-    text-align: center;
-    color: var(--text-light);
-    margin-bottom: 32px;
-    font-size: 14px;
-  }
-
-  .tools-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .tool-card {
-    background: var(--card);
-    border-radius: var(--card-radius);
-    padding: 20px;
-    box-shadow: var(--shadow);
-    transition: transform 0.1s, box-shadow 0.1s;
-    text-decoration: none;
-    color: inherit;
-    display: flex;
-    align-items: center;
-    gap: 18px;
-    border: 1px solid var(--border);
-  }
-
-  .tool-card:active {
-    transform: scale(0.98);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  }
-
-  .icon-svg {
-    width: 60px;
-    flex-shrink: 0;
-  }
-
-  .icon-svg svg {
-    width: 100%;
-    height: auto;
-    display: block;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
-  }
-
-  .tool-text h2 {
-    font-size: 20px;
-    color: var(--accent);
-    margin-bottom: 4px;
-  }
-
-  .tool-text p {
-    font-size: 13px;
-    color: var(--text-light);
-    opacity: 0.8;
-  }
-
-  footer {
-    text-align: center;
-    margin-top: 40px;
-    font-size: 11px;
-    color: var(--text-light);
-    opacity: 0.6;
-  }
-
-  @media (max-width: 500px) {
-    body { padding: 16px; }
-    .tool-card { padding: 16px; gap: 12px; }
-    .icon-svg { width: 50px; }
-    .tool-text h2 { font-size: 18px; }
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>AEM France Travail</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#111111">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <link rel="apple-touch-icon" href="icon.png">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f7;
+      color: #1c1c1e;
+      padding: 1rem;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    h1 { font-size: 1.8rem; margin-bottom: 0.25rem; }
+    .card {
+      background: white;
+      border-radius: 1rem;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      border: 1px solid #e5e5ea;
+    }
+    .upload-area {
+      border: 2px dashed #ccc;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      text-align: center;
+      background: #fafafc;
+      cursor: pointer;
+    }
+    .btn {
+      background: #1c1c1e;
+      color: white;
+      border: none;
+      padding: 0.7rem 1.2rem;
+      border-radius: 2rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      margin: 0.25rem;
+    }
+    .btn-secondary { background: #e5e5ea; color: #1c1c1e; }
+    .btn-danger { background: #d32f2f; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    th, td {
+      border-bottom: 1px solid #e5e5ea;
+      padding: 0.75rem 0.5rem;
+      text-align: left;
+    }
+    th { background: #f8f8fa; }
+    input {
+      width: 100%;
+      padding: 0.4rem;
+      border: 1px solid #ccc;
+      border-radius: 0.5rem;
+      font-size: 0.85rem;
+    }
+    .totals {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 2px solid #e5e5ea;
+      flex-wrap: wrap;
+    }
+    .log {
+      background: #1c1c1e;
+      color: #a5d6ff;
+      font-family: monospace;
+      font-size: 0.75rem;
+      padding: 0.75rem;
+      border-radius: 0.75rem;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal-content {
+      background: white;
+      max-width: 90%;
+      width: 500px;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      max-height: 90%;
+      overflow-y: auto;
+    }
+    .modal-content img, .modal-content canvas {
+      max-width: 100%;
+      margin-bottom: 1rem;
+      border-radius: 0.5rem;
+      border: 1px solid #ccc;
+    }
+    .date-selectors {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+      align-items: center;
+    }
+    .date-selectors label {
+      font-weight: 600;
+      width: 40px;
+    }
+    .date-selectors select {
+      padding: 0.4rem;
+      border-radius: 0.5rem;
+      border: 1px solid #ccc;
+      background: white;
+      font-size: 0.9rem;
+    }
+    .date-group {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+      background: #f8f8fa;
+      padding: 0.5rem;
+      border-radius: 0.75rem;
+    }
+    .modal-content input[type="text"] {
+      margin-bottom: 0.75rem;
+      width: 100%;
+    }
+    @media (max-width: 700px) {
+      table, thead, tbody, th, td, tr { display: block; }
+      thead { display: none; }
+      tr {
+        margin-bottom: 1rem;
+        border: 1px solid #e5e5ea;
+        border-radius: 0.75rem;
+        padding: 0.5rem;
+      }
+      td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: none;
+        padding: 0.4rem 0;
+      }
+      td:before {
+        content: attr(data-label);
+        font-weight: 600;
+        width: 35%;
+      }
+      .date-selectors { flex-direction: column; align-items: stretch; }
+      .date-group { justify-content: space-between; }
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+  <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+  </script>
 </head>
 <body>
 <div class="container">
-  <h1>Stage Tools</h1>
-  <div class="sub">Outils terrain pour le spectacle vivant</div>
-
-  <div class="tools-grid">
-    <!-- Tuile : Calcul praticables -->
-    <a href="praticables/index.html" class="tool-card">
-      <div class="icon-svg">
-        <svg viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg">
-          <rect x="5" y="5" width="90" height="40" rx="4" fill="#cbd5e1" stroke="#4c6e9e" stroke-width="1.5" />
-          <line x1="50" y1="5" x2="50" y2="45" stroke="#4c6e9e" stroke-width="1" opacity="0.5" />
-          <line x1="5" y1="25" x2="95" y2="25" stroke="#4c6e9e" stroke-width="1" opacity="0.5" />
-          <rect x="5" y="5" width="90" height="40" rx="4" fill="none" stroke="#1e3a5f" stroke-width="0.5" />
-        </svg>
-      </div>
-      <div class="tool-text">
-        <h2>Calcul praticables</h2>
-        <p>Modules, risers, sucres, export PNG et partage</p>
-      </div>
-    </a>
-
-    <!-- Tuile : Calcul étayage -->
-    <a href="etayage/index.html" class="tool-card">
-      <div class="icon-svg">
-        <svg viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg">
-          <rect x="5" y="5" width="90" height="40" rx="4" fill="#cbd5e1" stroke="#4c6e9e" stroke-width="1.5" />
-          <circle cx="25" cy="25" r="5" fill="#1e3a5f" />
-          <circle cx="50" cy="25" r="5" fill="#1e3a5f" />
-          <circle cx="75" cy="25" r="5" fill="#1e3a5f" />
-          <line x1="25" y1="25" x2="75" y2="25" stroke="#1e3a5f" stroke-width="3" />
-        </svg>
-      </div>
-      <div class="tool-text">
-        <h2>Calcul étayage</h2>
-        <p>Poteaux, moises, vérins, cales, doubles colliers</p>
-      </div>
-    </a>
-
-    <!-- Tuiles supplémentaires à copier/coller -->
+  <h1>📄 AEM France Travail</h1>
+  <div class="card">
+    <div class="upload-area" id="dropzone">
+      📂 Déposez vos fichiers (PDF, images, ZIP)<br>
+      ou <strong>cliquez pour sélectionner</strong>
+      <input type="file" id="fileInput" multiple accept=".pdf,.jpg,.jpeg,.png,.zip" style="display:none">
+    </div>
+    <div style="margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem;">
+      <button class="btn" id="processBtn">🔍 Importer des fichiers</button>
+      <button class="btn btn-secondary" id="addRowBtn">➕ Ajouter une ligne vide</button>
+      <button class="btn btn-secondary" id="exportJsonBtn">💾 Exporter JSON</button>
+      <button class="btn btn-secondary" id="exportPdfBtn">🖨️ Exporter PDF</button>
+      <button class="btn btn-secondary" id="clearBtn">🗑️ Tout effacer</button>
+    </div>
   </div>
-  <footer>v1.1 – outils terrain ć meda stéphane</footer>
+
+  <div class="card">
+    <h3>📋 AEM</h3>
+    <div style="overflow-x: auto;">
+      <table id="aemTable">
+        <thead><tr><th>Période / Date</th><th>Employeur</th><th>Heures</th><th>Brut (€)</th><th></th></tr></thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+    <div class="totals" id="totalsBlock"></div>
+  </div>
+
+  <div class="card">
+    <h3>📋 Journal</h3>
+    <div class="log" id="logArea">✅ Prêt. Importez vos AEM (PDF ou photos).</div>
+  </div>
+
+  <div class="card" style="text-align: center; font-size: 0.8rem;">
+    📱 Installation : « Partager » → « Ajouter à l’écran d’accueil »
+  </div>
 </div>
+
+<!-- Modal pour saisie manuelle avec sélecteurs de dates -->
+<div id="manualModal" class="modal">
+  <div class="modal-content">
+    <h3>📄 Saisie manuelle</h3>
+    <div id="modalPreview"></div>
+    
+    <div class="date-selectors">
+      <div class="date-group">
+        <label>Du</label>
+        <select id="duJour">${[...Array(31)].map((_,i) => `<option value="${i+1}">${i+1}</option>`).join('')}</select>
+        <select id="duMois">${[...Array(12)].map((_,i) => `<option value="${i+1}">${i+1}</option>`).join('')}</select>
+        <select id="duAnnee"><option value="2025">2025</option><option value="2026" selected>2026</option><option value="2027">2027</option></select>
+      </div>
+      <div class="date-group">
+        <label>Au</label>
+        <select id="auJour">${[...Array(31)].map((_,i) => `<option value="${i+1}">${i+1}</option>`).join('')}</select>
+        <select id="auMois">${[...Array(12)].map((_,i) => `<option value="${i+1}">${i+1}</option>`).join('')}</select>
+        <select id="auAnnee"><option value="2025">2025</option><option value="2026" selected>2026</option><option value="2027">2027</option></select>
+      </div>
+    </div>
+    
+    <input type="text" id="modalEmployeur" placeholder="Employeur">
+    <input type="text" id="modalHeures" placeholder="Heures">
+    <input type="text" id="modalBrut" placeholder="Brut (€)">
+    
+    <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+      <button class="btn" id="modalConfirm">✅ Ajouter</button>
+      <button class="btn btn-secondary" id="modalCancel">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let aemItems = [];
+  let nextId = 1;
+  let pendingFileForModal = null;
+
+  // DOM elements
+  const dropzone = document.getElementById('dropzone');
+  const fileInput = document.getElementById('fileInput');
+  const processBtn = document.getElementById('processBtn');
+  const addRowBtn = document.getElementById('addRowBtn');
+  const exportJsonBtn = document.getElementById('exportJsonBtn');
+  const exportPdfBtn = document.getElementById('exportPdfBtn');
+  const clearBtn = document.getElementById('clearBtn');
+  const tableBody = document.getElementById('tableBody');
+  const totalsBlock = document.getElementById('totalsBlock');
+  const logArea = document.getElementById('logArea');
+  const manualModal = document.getElementById('manualModal');
+  const modalPreview = document.getElementById('modalPreview');
+  const modalEmployeur = document.getElementById('modalEmployeur');
+  const modalHeures = document.getElementById('modalHeures');
+  const modalBrut = document.getElementById('modalBrut');
+  const modalConfirm = document.getElementById('modalConfirm');
+  const modalCancel = document.getElementById('modalCancel');
+  
+  // Sélecteurs de dates
+  const duJour = document.getElementById('duJour');
+  const duMois = document.getElementById('duMois');
+  const duAnnee = document.getElementById('duAnnee');
+  const auJour = document.getElementById('auJour');
+  const auMois = document.getElementById('auMois');
+  const auAnnee = document.getElementById('auAnnee');
+
+  function addLog(msg) {
+    const p = document.createElement('div');
+    p.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+    logArea.appendChild(p);
+    logArea.scrollTop = logArea.scrollHeight;
+  }
+
+  function saveToLocalStorage() {
+    localStorage.setItem('aemData', JSON.stringify({ items: aemItems, nextId: nextId }));
+  }
+
+  function loadFromLocalStorage() {
+    const raw = localStorage.getItem('aemData');
+    if (raw) {
+      try {
+        const data = JSON.parse(raw);
+        aemItems = data.items || [];
+        nextId = data.nextId || 1;
+        renderTable();
+        addLog(`Chargement : ${aemItems.length} AEM.`);
+      } catch(e) {}
+    }
+  }
+
+  function parseDateToTimestamp(dateStr) {
+    if (!dateStr) return 0;
+    let clean = dateStr.replace(/ au /g, ' ').replace(/[^0-9\/]/g, ' ');
+    let parts = clean.match(/(\d{1,2})[\/\s](\d{1,2})[\/\s](\d{4})/);
+    if (parts) {
+      return new Date(parts[3], parts[2]-1, parts[1]).getTime();
+    }
+    return 0;
+  }
+
+  function renderTable() {
+    const sorted = [...aemItems].sort((a,b) => parseDateToTimestamp(a.date) - parseDateToTimestamp(b.date));
+    tableBody.innerHTML = '';
+    let totalHeures = 0, totalBrut = 0;
+    sorted.forEach(item => {
+      const row = tableBody.insertRow();
+      const tdDate = row.insertCell(0);
+      const dateInp = document.createElement('input');
+      dateInp.value = item.date || '';
+      dateInp.placeholder = "JJ/MM/AAAA ou JJ/MM/AAAA au JJ/MM/AAAA";
+      dateInp.onchange = e => { item.date = e.target.value; saveToLocalStorage(); renderTable(); };
+      tdDate.appendChild(dateInp);
+      tdDate.setAttribute('data-label', 'Période');
+
+      const tdEmp = row.insertCell(1);
+      const empInp = document.createElement('input');
+      empInp.value = item.employeur || '';
+      empInp.placeholder = 'Employeur';
+      empInp.onchange = e => { item.employeur = e.target.value; saveToLocalStorage(); renderTable(); };
+      tdEmp.appendChild(empInp);
+      tdEmp.setAttribute('data-label', 'Employeur');
+
+      const tdH = row.insertCell(2);
+      const hInp = document.createElement('input');
+      hInp.value = item.heures || '';
+      hInp.placeholder = 'Heures';
+      hInp.onchange = e => { item.heures = e.target.value; saveToLocalStorage(); renderTable(); };
+      tdH.appendChild(hInp);
+      tdH.setAttribute('data-label', 'Heures');
+
+      const tdBrut = row.insertCell(3);
+      const brutInp = document.createElement('input');
+      brutInp.value = item.brut || '';
+      brutInp.placeholder = 'Brut €';
+      brutInp.onchange = e => { item.brut = e.target.value; saveToLocalStorage(); renderTable(); };
+      tdBrut.appendChild(brutInp);
+      tdBrut.setAttribute('data-label', 'Brut');
+
+      const tdDel = row.insertCell(4);
+      const delBtn = document.createElement('button');
+      delBtn.textContent = '✖';
+      delBtn.style.background = 'none';
+      delBtn.style.border = 'none';
+      delBtn.style.fontSize = '1.2rem';
+      delBtn.style.cursor = 'pointer';
+      delBtn.onclick = () => {
+        aemItems = aemItems.filter(i => i.id !== item.id);
+        saveToLocalStorage();
+        renderTable();
+        addLog(`Supprimé : ${item.employeur} – ${item.date}`);
+      };
+      tdDel.appendChild(delBtn);
+
+      const h = parseFloat(item.heures);
+      const b = parseFloat(item.brut);
+      if (!isNaN(h)) totalHeures += h;
+      if (!isNaN(b)) totalBrut += b;
+    });
+    totalsBlock.innerHTML = `<div><strong>Total heures</strong> : ${totalHeures.toFixed(2)} h</div>
+                             <div><strong>Total brut</strong> : ${totalBrut.toFixed(2)} €</div>
+                             <div><strong>Nb AEM</strong> : ${sorted.length}</div>`;
+  }
+
+  function isDuplicate(newItem, existing) {
+    return existing.some(e => e.date === newItem.date && e.employeur === newItem.employeur && e.heures === newItem.heures && e.brut === newItem.brut);
+  }
+
+  function addAEMs(extractedList, sourceName) {
+    let added = 0;
+    for (let raw of extractedList) {
+      if (!raw.date || !raw.employeur) continue;
+      const newItem = { id: nextId++, date: raw.date, employeur: raw.employeur, heures: raw.heures || '', brut: raw.brut || '', source: sourceName };
+      if (!isDuplicate(newItem, aemItems)) {
+        aemItems.push(newItem);
+        added++;
+      }
+    }
+    if (added) { saveToLocalStorage(); renderTable(); addLog(`✅ ${added} AEM ajoutées depuis ${sourceName}`); }
+    else addLog(`ℹ️ Aucune nouvelle AEM dans ${sourceName}`);
+  }
+
+  function addEmptyRow() {
+    const newItem = { id: nextId++, date: '', employeur: '', heures: '', brut: '', source: 'manuel' };
+    aemItems.push(newItem);
+    saveToLocalStorage();
+    renderTable();
+    addLog(`➕ Ligne vide ajoutée.`);
+  }
+
+  // Fonction d'extraction (inchangée, adaptée à vos AEM)
+  function tryExtractFromText(text, filename) {
+    const clean = text.replace(/\s+/g, ' ').trim();
+    let dateDebut = '', dateFin = '';
+    const debutRegex = /Date de début du contrat\s*:?\s*(\d{1,2})\s*(\d{1,2})\s*(\d{4})/i;
+    const finRegex = /Date de fin du contrat de travail\s*:?\s*(\d{1,2})\s*(\d{1,2})\s*(\d{4})/i;
+    let m = clean.match(debutRegex);
+    if (m) dateDebut = `${m[1]}/${m[2]}/${m[3]}`;
+    m = clean.match(finRegex);
+    if (m) dateFin = `${m[1]}/${m[2]}/${m[3]}`;
+    let dateAffichee = '';
+    if (dateDebut && dateFin && dateDebut !== dateFin) {
+      dateAffichee = `${dateDebut} au ${dateFin}`;
+    } else if (dateDebut) {
+      dateAffichee = dateDebut;
+    } else {
+      const anyDate = clean.match(/(\d{1,2})[\/\s](\d{1,2})[\/\s](\d{4})/);
+      if (anyDate) dateAffichee = `${anyDate[1]}/${anyDate[2]}/${anyDate[3]}`;
+    }
+    let employeur = '';
+    const raisonRegex = /Raison Sociale\s*:?\s*([A-Za-z0-9\s\-\'&]+?)(?:\s|$)/i;
+    m = clean.match(raisonRegex);
+    if (m) employeur = m[1].trim();
+    let heures = '';
+    const heuresRegex = /Nombre d'heures effectives\s*:?\s*(\d+[\.,]?\d*)/i;
+    m = clean.match(heuresRegex);
+    if (m) heures = m[1].replace(',', '.');
+    let brut = '';
+    const brutRegex = /SALARIE BRUT\s*:?\s*(\d+[\.,]?\d*)/i;
+    m = clean.match(brutRegex);
+    if (m) brut = m[1].replace(',', '.');
+    if (dateAffichee && employeur) {
+      addLog(`✅ Extraction auto réussie dans ${filename} : ${employeur} - ${dateAffichee}`);
+      return [{ date: dateAffichee, employeur, heures, brut }];
+    }
+    return null;
+  }
+
+  // Ouvrir la modale de saisie manuelle avec aperçu
+  async function openManualModal(file, previewDataUrlOrCanvas) {
+    pendingFileForModal = file;
+    modalPreview.innerHTML = '';
+    if (previewDataUrlOrCanvas instanceof HTMLCanvasElement) {
+      modalPreview.appendChild(previewDataUrlOrCanvas);
+    } else if (typeof previewDataUrlOrCanvas === 'string') {
+      const img = document.createElement('img');
+      img.src = previewDataUrlOrCanvas;
+      modalPreview.appendChild(img);
+    } else {
+      modalPreview.innerHTML = '<p>Aperçu non disponible</p>';
+    }
+    // Réinitialiser les selects avec le mois/année courant
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth() + 1;
+    duAnnee.value = currentYear;
+    duMois.value = currentMonth;
+    auAnnee.value = currentYear;
+    auMois.value = currentMonth;
+    duJour.value = 1;
+    auJour.value = 1;
+    modalEmployeur.value = '';
+    modalHeures.value = '';
+    modalBrut.value = '';
+    manualModal.style.display = 'flex';
+  }
+
+  function closeModal() {
+    manualModal.style.display = 'none';
+    pendingFileForModal = null;
+    modalPreview.innerHTML = '';
+  }
+
+  // Construire la date formatée à partir des selects
+  function getFormattedDate() {
+    const jourD = duJour.value.padStart(2, '0');
+    const moisD = duMois.value.padStart(2, '0');
+    const anneeD = duAnnee.value;
+    const jourA = auJour.value.padStart(2, '0');
+    const moisA = auMois.value.padStart(2, '0');
+    const anneeA = auAnnee.value;
+    const dateDebut = `${jourD}/${moisD}/${anneeD}`;
+    const dateFin = `${jourA}/${moisA}/${anneeA}`;
+    if (dateDebut === dateFin) return dateDebut;
+    return `${dateDebut} au ${dateFin}`;
+  }
+
+  modalConfirm.onclick = () => {
+    const dateVal = getFormattedDate();
+    const employeurVal = modalEmployeur.value.trim();
+    const heuresVal = modalHeures.value.trim();
+    const brutVal = modalBrut.value.trim();
+    if (dateVal && employeurVal) {
+      const newItem = {
+        id: nextId++,
+        date: dateVal,
+        employeur: employeurVal,
+        heures: heuresVal,
+        brut: brutVal,
+        source: pendingFileForModal ? pendingFileForModal.name : 'manuel'
+      };
+      if (!isDuplicate(newItem, aemItems)) {
+        aemItems.push(newItem);
+        saveToLocalStorage();
+        renderTable();
+        addLog(`📝 Saisie manuelle depuis ${pendingFileForModal ? pendingFileForModal.name : 'formulaire'} : ${employeurVal} - ${dateVal}`);
+      } else {
+        addLog(`⚠️ Doublon ignoré pour ${employeurVal} - ${dateVal}`);
+      }
+    } else {
+      addLog(`❌ Saisie incomplète (date et employeur requis)`);
+    }
+    closeModal();
+  };
+  modalCancel.onclick = closeModal;
+
+  // Générer un aperçu d'un PDF (première page en canvas)
+  async function getPDFPreview(file) {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    const page = await pdf.getPage(1);
+    const viewport = page.getViewport({ scale: 1.0 });
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    canvas.height = viewport.height;
+    canvas.width = viewport.width;
+    await page.render({ canvasContext: context, viewport: viewport }).promise;
+    return canvas;
+  }
+
+  // Traiter un fichier : tenter l'extraction, sinon ouvrir modale
+  async function processFile(file) {
+    const name = file.name;
+    addLog(`Analyse : ${name}`);
+    if (name.match(/\.(jpg|jpeg|png|heic)$/i)) {
+      const reader = new FileReader();
+      reader.onload = (e) => openManualModal(file, e.target.result);
+      reader.readAsDataURL(file);
+      return;
+    }
+    if (name.endsWith('.pdf')) {
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      let fullText = '';
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const content = await page.getTextContent();
+        fullText += content.items.map(item => item.str).join(' ') + '\n';
+      }
+      const extracted = tryExtractFromText(fullText, name);
+      if (extracted && extracted.length > 0) {
+        addAEMs(extracted, name);
+      } else {
+        const previewCanvas = await getPDFPreview(file);
+        await openManualModal(file, previewCanvas);
+      }
+      return;
+    }
+    if (name.endsWith('.zip')) {
+      const zip = await JSZip.loadAsync(file);
+      for (let [filename, zipEntry] of Object.entries(zip.files)) {
+        if (zipEntry.dir) continue;
+        const blob = await zipEntry.async('blob');
+        const innerFile = new File([blob], filename);
+        await processFile(innerFile);
+      }
+      return;
+    }
+    addLog(`Fichier ignoré (type non supporté) : ${name}`);
+  }
+
+  async function processAllFiles(files) {
+    addLog(`Traitement de ${files.length} fichier(s)...`);
+    for (const file of files) {
+      await processFile(file);
+    }
+    addLog('Traitement terminé.');
+  }
+
+  function exportToPDF() {
+    window.print();
+  }
+
+  // Événements
+  dropzone.addEventListener('click', () => fileInput.click());
+  dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.style.background = '#eef2ff'; });
+  dropzone.addEventListener('dragleave', () => dropzone.style.background = '#fafafc');
+  dropzone.addEventListener('drop', async e => {
+    e.preventDefault();
+    dropzone.style.background = '#fafafc';
+    const files = Array.from(e.dataTransfer.files);
+    if (files.length) await processAllFiles(files);
+  });
+  fileInput.addEventListener('change', async e => {
+    const files = Array.from(e.target.files);
+    if (files.length) await processAllFiles(files);
+    fileInput.value = '';
+  });
+  processBtn.addEventListener('click', () => fileInput.click());
+  addRowBtn.addEventListener('click', () => addEmptyRow());
+  exportJsonBtn.addEventListener('click', () => {
+    const dataStr = JSON.stringify(aemItems, null, 2);
+    const blob = new Blob([dataStr], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `aem_export_${new Date().toISOString().slice(0,19)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    addLog('Export JSON effectué.');
+  });
+  exportPdfBtn.addEventListener('click', () => exportToPDF());
+  clearBtn.addEventListener('click', () => {
+    if (confirm('Effacer TOUTES les AEM ?')) {
+      aemItems = [];
+      nextId = 1;
+      saveToLocalStorage();
+      renderTable();
+      addLog('Toutes les données ont été effacées.');
+    }
+  });
+
+  loadFromLocalStorage();
+</script>
 </body>
 </html>
